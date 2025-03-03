@@ -41,14 +41,40 @@
           <a class="reset-btn" href="/">Reset Filters</a>
         </div>
       </form>
+      <!-- Sorting Dropdown (client-side sorting only) -->
+      <div class="sort-container" style="margin-top: 10px;">
+        <label for="sort_by">Sort by:</label>
+        <select id="sort_by">
+          <option value="">Default</option>
+          <option value="deal_type">Deal Type</option>
+          <option value="cpu">CPU Type</option>
+          <option value="net_profit">Net Profit</option>
+          <option value="price">Price</option>
+        </select>
+      </div>
     </div>
   </header>
   
   <div class="container">
     {% if deals %}
       {% for deal in deals %}
-      <div class="card {% if deal.net_profit is not none and deal.net_profit < 10 %}fair-deal-card{% elif deal.net_profit is not none and deal.net_profit < 30 %}good-deal-card{% else %}great-deal-card{% endif %}">
-        <div class="card-header {% if deal.net_profit is not none and deal.net_profit < 10 %}fair-deal-header{% elif deal.net_profit is not none and deal.net_profit < 30 %}good-deal-header{% else %}great-deal-header{% endif %}">
+      {# Determine deal type for data attribute #}
+      {% set d_type = 'fair' %}
+      {% if deal.net_profit is not none %}
+        {% if deal.net_profit < 10 %}
+          {% set d_type = 'fair' %}
+        {% elif deal.net_profit < 30 %}
+          {% set d_type = 'good' %}
+        {% else %}
+          {% set d_type = 'great' %}
+        {% endif %}
+      {% endif %}
+      <div class="card {% if d_type == 'fair' %}fair-deal-card{% elif d_type == 'good' %}good-deal-card{% else %}great-deal-card{% endif %}"
+           data-deal-type="{{ d_type }}"
+           data-cpu="{{ deal.cpu_model if deal.cpu_model else deal.title }}"
+           data-net-profit="{{ deal.net_profit if deal.net_profit is not none else 0 }}"
+           data-price="{{ deal.price }}">
+        <div class="card-header {% if d_type == 'fair' %}fair-deal-header{% elif d_type == 'good' %}good-deal-header{% else %}great-deal-header{% endif %}">
           {% if deal.net_profit is not none %}
             {% if deal.net_profit < 10 %}
               Fair Deal
@@ -98,5 +124,53 @@
   <footer>
     &copy; 2025 Dummy Deals. All Rights Reserved.
   </footer>
+  
+  <!-- Client-Side Sorting Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const sortSelect = document.getElementById('sort_by');
+      const container = document.querySelector('.container');
+
+      sortSelect.addEventListener('change', function() {
+        const criteria = this.value;
+        // Get NodeList of card elements and convert to an array
+        const cards = Array.from(container.querySelectorAll('.card'));
+        
+        let sortedCards;
+        
+        if (criteria === 'deal_type') {
+          // Custom order for deal type: great, good, fair, then low sales data
+          const order = { 'great': 0, 'good': 1, 'fair': 2, 'low': 3 };
+          sortedCards = cards.sort((a, b) => {
+            return order[a.dataset.dealType] - order[b.dataset.dealType];
+          });
+        } else if (criteria === 'cpu') {
+          sortedCards = cards.sort((a, b) => {
+            const cpuA = a.dataset.cpu.toLowerCase();
+            const cpuB = b.dataset.cpu.toLowerCase();
+            if (cpuA < cpuB) return -1;
+            if (cpuA > cpuB) return 1;
+            return 0;
+          });
+        } else if (criteria === 'net_profit') {
+          sortedCards = cards.sort((a, b) => {
+            return parseFloat(b.dataset.netProfit) - parseFloat(a.dataset.netProfit);
+          });
+        } else if (criteria === 'price') {
+          sortedCards = cards.sort((a, b) => {
+            return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+          });
+        } else {
+          // If "Default" is selected, do nothing (or you could reload original order)
+          return;
+        }
+        
+        // Remove all cards from container
+        container.innerHTML = "";
+        // Append sorted cards
+        sortedCards.forEach(card => container.appendChild(card));
+      });
+    });
+  </script>
 </body>
 </html>

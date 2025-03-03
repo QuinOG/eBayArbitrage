@@ -85,7 +85,7 @@ def index():
             if listing.get("category", "").lower() in [cat.lower() for cat in selected_categories]
         ]
 
-    # Apply filtering based on deal type
+    # Apply filtering based on deal type (if selected)
     if selected_deal_types:
         filtered_listings = []
         for listing in listings:
@@ -100,7 +100,11 @@ def index():
                 filtered_listings.append(listing)
         listings = filtered_listings
 
-    return render_template('index.html', deals=listings, selected_categories=selected_categories, selected_deal_types=selected_deal_types)
+    # No server-side sorting is applied now. Client-side JavaScript will handle sorting.
+    return render_template('index.html', 
+                           deals=listings, 
+                           selected_categories=selected_categories, 
+                           selected_deal_types=selected_deal_types)
 
 if __name__ == '__main__':
     app.run(debug=True)
