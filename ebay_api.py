@@ -2,9 +2,12 @@ import os
 import base64
 import requests
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import time
 import statistics
+
+# Global cache for CPU model extraction
+cpu_model_cache = {}
 
 DEBUG = True
 
@@ -13,6 +16,23 @@ listing_cache = {
     "listings": [],
     "timestamp": None
 }
+
+# OAuth token cache
+TOKEN_CACHE = {
+    "token": None,
+    "expires_at": None  # datetime when the token expires
+}
+
+# Precompile regular expressions for performance
+RE_INTEL_CORE = re.compile(r'(intel\s+(?:core\s+)?i\d[- ]*\d{3,5}[a-z0-9]*)\b', re.IGNORECASE)
+RE_AMD_RYZEN = re.compile(r'((?:amd\s+)?ryzen\s+\d+\s+\d{3,5}[a-z0-9]*)\b', re.IGNORECASE)
+RE_AMD_ATHLON = re.compile(r'(amd\s+(?:athlon\s+(?:64\s+)?)?[a-z0-9-]*\d+[a-z0-9-]*)\b', re.IGNORECASE)
+RE_INTEL_XEON_ALT = re.compile(r'(intel\s+xeon\s+e\d{1,4}[-\s]*\d{1,4}(?:\s*v\d+)?(?:\s*\d+M\s*cache)?)', re.IGNORECASE)
+RE_INTEL_XEON_FALLBACK = re.compile(r'(intel\s+xeon\s+w[-\s]?\d{3,5}[a-z0-9-]*(?:\s+\d+-core)?)\b', re.IGNORECASE)
+RE_INTEL_CORE2 = re.compile(r'(intel\s+core\s+2\s+duo\s+[a-z]\d{4,5})\b', re.IGNORECASE)
+RE_AMD_RYZEN_PRO = re.compile(r'((?:amd\s+)?ryzen\s+(?:pro\s+)?\d+\s+\d{3,5}[a-z0-9]*)\b', re.IGNORECASE)
+RE_LOT = re.compile(r'(?:lot\s+of\s+\d+\s+assorted\s+)?(?:intel\s+(?:pentium|celeron|core\s+2)|amd\s+(?:athlon))\b', re.IGNORECASE)
+RE_REFRESH_RATE = re.compile(r'(\d+\.\d+)\s*ghz', re.IGNORECASE)
 
 def request_with_retry(method, url, headers=None, params=None, data=None, max_attempts=3, delay=3):
     attempt = 0
@@ -53,53 +73,58 @@ def extract_cpu_model(title):
     title_lower = re.sub(r'\s+', ' ', title_clean.lower()).strip()
     extracted = None
 
-    # 1) Intel Core (with optional "core", handles variations)
-    intel_match = re.search(r'(intel\s+(?:core\s+)?i\d[- ]*\d{3,5}[a-z0-9]*)\b', title_lower)
+    # 1) Intel Core
+    intel_match = RE_INTEL_CORE.search(title_lower)
     if intel_match:
         extracted = intel_match.group(0).strip()
 
-    # 2) AMD Ryzen (flexible for optional "AMD")
+    # 2) AMD Ryzen
     if not extracted:
-        amd_ryzen_match = re.search(r'(?:amd\s+)?ryzen\s+\d+\s+\d{3,5}[a-z0-9]*\b', title_lower)
+        amd_ryzen_match = RE_AMD_RYZEN.search(title_lower)
         if amd_ryzen_match:
             extracted = amd_ryzen_match.group(0).strip()
 
-    # 3) AMD Athlon (excluded as non-consumer, but check for clarity)
+    # 3) AMD Athlon
     if not extracted:
-        amd_athlon_match = re.search(r'(amd\s+(?:athlon\s+(?:64\s+)?)?[a-z0-9-]*\d+[a-z0-9-]*)\b', title_lower)
+        amd_athlon_match = RE_AMD_ATHLON.search(title_lower)
         if amd_athlon_match:
-            extracted = amd_athlon_match.group(1).strip()
+            extracted = amd_athlon_match.group(0).strip()
 
-    # 4) Intel Xeon (explicitly skip as non-consumer)
+    # 4) Intel Xeon (alternative pattern)
     if not extracted:
-        intel_xeon_match = re.search(r'(intel\s+xeon\s+w[-\s]?\d{3,5}[a-z0-9-]*(?:\s+\d+-core)?)\b', title_lower)
+        intel_xeon_alt_match = RE_INTEL_XEON_ALT.search(title_lower)
+        if intel_xeon_alt_match:
+            extracted = intel_xeon_alt_match.group(1).strip()
+
+    # 5) Intel Xeon fallback
+    if not extracted:
+        intel_xeon_match = RE_INTEL_XEON_FALLBACK.search(title_lower)
         if intel_xeon_match:
             extracted = intel_xeon_match.group(1).strip()
 
-    # 5) Intel Core 2 Duo (explicitly skip as non-consumer)
+    # 6) Intel Core 2 Duo (non-consumer)
     if not extracted:
-        intel_core2_match = re.search(r'(intel\s+core\s+2\s+duo\s+[a-z]\d{4,5})\b', title_lower)
+        intel_core2_match = RE_INTEL_CORE2.search(title_lower)
         if intel_core2_match:
             extracted = intel_core2_match.group(1).strip()
 
-    # 6) AMD Ryzen Pro (explicitly skip as non-consumer)
+    # 7) AMD Ryzen Pro (non-consumer)
     if not extracted:
-        amd_ryzen_pro_match = re.search(r'(?:amd\s+)?ryzen\s+(?:pro\s+)?\d+\s+\d{3,5}[a-z0-9]*\b', title_lower)
+        amd_ryzen_pro_match = RE_AMD_RYZEN_PRO.search(title_lower)
         if amd_ryzen_pro_match:
             extracted = amd_ryzen_pro_match.group(0).strip()
 
-    # 7) Mixed lots or vintage processors (e.g., Pentium Pro, lots)
+    # 8) Mixed lots or vintage processors
     if not extracted:
-        lot_match = re.search(r'(?:lot\s+of\s+\d+\s+assorted\s+)?(?:intel\s+(?:pentium|celeron|core\s+2)|amd\s+(?:athlon))\b', title_lower)
+        lot_match = RE_LOT.search(title_lower)
         if lot_match:
             extracted = lot_match.group(0).strip()
 
     if extracted:
-        # Attempt to extract a refresh rate (e.g., "3.6GHz")
-        refresh_rate_match = re.search(r'(\d+\.\d+)\s*ghz', title_lower)
+        # Extract refresh rate if present
+        refresh_rate_match = RE_REFRESH_RATE.search(title_lower)
         if refresh_rate_match:
             rr = refresh_rate_match.group(1).strip()
-            # Remove trailing zeros and format (e.g., "3.00" -> "3", "3.40" -> "3.4")
             rr_clean = str(float(rr))
             if rr_clean.lower() not in extracted.lower():
                 extracted += " " + rr_clean + "GHz"
@@ -108,15 +133,24 @@ def extract_cpu_model(title):
             print(f"Original title: '{title}'")
             print(f"Extracted model: '{extracted}'")
 
-        # Convert to Title Case, ensure "GHz" consistency
+        # Convert to Title Case and standardize GHz
         extracted_title = extracted.title().replace("Ghz", "GHz")
 
-        # If it's not a typical consumer CPU (i3/i5/i7/i9 or Ryzen 3/5/7/9), skip it
-        if not is_consumer_cpu(extracted_title):
+        # Skip models that clearly are not consumer-oriented
+        non_consumer_keywords = ["epyc", "core duo", "power mac"]
+        if any(keyword in extracted_title.lower() for keyword in non_consumer_keywords):
             if DEBUG:
                 print(f"Skipping non-consumer CPU model: '{extracted_title}'")
                 print("-------")
             return None
+
+        # Allow Intel Xeon even if not typical consumer; otherwise enforce consumer check
+        if not is_consumer_cpu(extracted_title) and "xeon" not in extracted_title.lower():
+            if DEBUG:
+                print(f"Skipping non-consumer CPU model: '{extracted_title}'")
+                print("-------")
+            return None
+
         return extracted_title
     else:
         if DEBUG:
@@ -125,6 +159,13 @@ def extract_cpu_model(title):
         return None
 
 def get_ebay_oauth_token():
+    # Check token cache first
+    now = datetime.now(timezone.utc)
+    if TOKEN_CACHE["token"] and TOKEN_CACHE["expires_at"] and now < TOKEN_CACHE["expires_at"]:
+        if DEBUG:
+            print("Using cached OAuth token")
+        return TOKEN_CACHE["token"]
+
     client_id = os.getenv("EBAY_CLIENT_ID")
     client_secret = os.getenv("EBAY_CLIENT_SECRET")
     if not client_id or not client_secret:
@@ -139,9 +180,14 @@ def get_ebay_oauth_token():
     data = {"grant_type": "client_credentials", "scope": "https://api.ebay.com/oauth/api_scope"}
     response = request_with_retry("POST", url, headers=headers, data=data)
     if response.status_code == 200:
+        token = response.json()["access_token"]
+        # Assume token expires in 2 hours if not provided explicitly
+        expires_in = int(response.json().get("expires_in", 7200))
+        TOKEN_CACHE["token"] = token
+        TOKEN_CACHE["expires_at"] = now + timedelta(seconds=expires_in)
         if DEBUG:
             print("Successfully retrieved OAuth token")
-        return response.json()["access_token"]
+        return token
     else:
         if DEBUG:
             print(f"Error retrieving token: {response.status_code} {response.text}")
@@ -171,7 +217,7 @@ def format_time_ago(post_date_str):
 
 def get_fair_market_value(cpu_model, condition="Used"):
     """
-    Uses 'limit': '5'. If fewer than 5 results come back, we append "(low sales data)".
+    Uses a limit of 5 listings. If fewer than 5 results come back, append "(low sales data)".
     """
     token = get_ebay_oauth_token()
     url = "https://api.ebay.com/buy/browse/v1/item_summary/search"
@@ -234,15 +280,18 @@ def get_fair_market_value(cpu_model, condition="Used"):
             print(f"Exception fetching prices for '{short_model}': {e}")
         return None, False
 
-def get_ebay_listings(keyword="computer parts", limit=50, cache_expiry=14400):  # 4 hours in seconds
+def get_ebay_listings(keyword="computer parts", limit=50, cache_expiry=14400):
+    """
+    Retrieves listings from eBay with caching. Measures and prints the time taken to reload listings.
+    """
+    start_time = time.perf_counter()
     global listing_cache
     now = datetime.now(timezone.utc)
 
-    # Check if cache is valid and no new listings are expected
+    # Use cache if valid
     if (listing_cache["listings"] and 
         listing_cache["timestamp"] and 
         (now - listing_cache["timestamp"]).total_seconds() < cache_expiry):
-        # Check if any cached listing's itemCreationDate is within cache_expiry
         has_new_listings = False
         for listing in listing_cache["listings"]:
             try:
@@ -258,11 +307,11 @@ def get_ebay_listings(keyword="computer parts", limit=50, cache_expiry=14400):  
                 continue
         if not has_new_listings:
             if DEBUG:
-                print(f"Returning cached listings (last updated: {listing_cache['timestamp']})")
+                elapsed = time.perf_counter() - start_time
+                print(f"Returning cached listings (last updated: {listing_cache['timestamp']}) - Reload took {elapsed:.2f} seconds")
             sort_order = {"great": 0, "good": 1, "fair": 2}
             return sorted(listing_cache["listings"], key=lambda l: sort_order.get(l.get("deal_type", "fair"), 2))
 
-    # Fetch new listings if cache is invalid, expired, or has new listings
     if DEBUG:
         print(f"Fetching new listings from eBay at {now}")
     token = get_ebay_oauth_token()
@@ -302,16 +351,15 @@ def get_ebay_listings(keyword="computer parts", limit=50, cache_expiry=14400):  
                 "shipping_cost": 0.00,
                 "tax_estimate": 0.00,
                 "net_profit": None,
-                "condition": item.get("condition", "Not Specified"),  # Included for display
+                "condition": item.get("condition", "Not Specified"),
                 "category": item.get("categoryPath", "Misc"),
                 "listing_url": item.get("itemWebUrl", ""),
                 "post_date": post_date,
                 "cpu_model": None,
                 "estimated_sale_price": None,
-                "itemCreationDate": creation_date_str  # Store for cache checking
+                "itemCreationDate": creation_date_str
             }
 
-            # If "cpu" or "processor" is in the listing, try extracting
             if "cpu" in listing_data["category"].lower() or "processor" in listing_data["title"].lower():
                 lot_match = re.search(r'(?i)^lot\s+of\s+(\d+)', listing_data["title"])
                 multiplier = int(lot_match.group(1)) if lot_match else 1
@@ -327,7 +375,6 @@ def get_ebay_listings(keyword="computer parts", limit=50, cache_expiry=14400):  
                         else:
                             listing_data["estimated_sale_price"] = f"{final_value:.2f}"
                         listing_data["net_profit"] = round(final_value - (listing_data["price"] + listing_data["shipping_cost"]), 2)
-                        # Classify the deal type
                         if listing_data["net_profit"] < 10:
                             listing_data["deal_type"] = "fair"
                         elif listing_data["net_profit"] < 30:
@@ -336,7 +383,6 @@ def get_ebay_listings(keyword="computer parts", limit=50, cache_expiry=14400):  
                             listing_data["deal_type"] = "great"
                         listings.append(listing_data)
 
-        # Update cache with new listings if there are changes or cache is expired
         if listings or (listing_cache["timestamp"] is None or (now - listing_cache["timestamp"]).total_seconds() >= cache_expiry):
             listing_cache["listings"] = listings
             listing_cache["timestamp"] = now
@@ -349,13 +395,14 @@ def get_ebay_listings(keyword="computer parts", limit=50, cache_expiry=14400):  
         if DEBUG:
             print(f"Error from Browse API: {response.status_code} {response.text}")
     
-    # Instead of filtering out fair deals, return all cached listings sorted by deal type.
     sort_order = {"great": 0, "good": 1, "fair": 2}
+    elapsed = time.perf_counter() - start_time
+    if DEBUG:
+        print(f"get_ebay_listings completed in {elapsed:.2f} seconds")
     return sorted(listing_cache["listings"], key=lambda l: sort_order.get(l.get("deal_type", "fair"), 2))
 
 if __name__ == "__main__":
     try:
-        # No console output for listings here, as per your request
         listings = get_ebay_listings(keyword="computer parts", limit=5)
     except Exception as e:
         if DEBUG:

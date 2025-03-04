@@ -65,46 +65,14 @@ def find_good_deals():
 
 @app.route('/', methods=['GET'])
 def index():
-    # Retrieve multi-select filters from query parameters
-    selected_categories = [cat for cat in request.args.getlist('category') if cat]
-    selected_deal_types = [dt for dt in request.args.getlist('deal_type') if dt]
-
-    # Optionally retrieve a keyword from query parameters (default to "computer parts")
+    # Retrieve the keyword from query parameters; filtering/sorting is now client-side.
     keyword = request.args.get('keyword', 'computer parts')
-
     try:
         listings = get_ebay_listings(keyword=keyword, limit=50)
     except Exception as e:
         print(e)
         listings = []  # Fallback to empty list or dummy_deals
-
-    # Apply server-side filtering by category
-    if selected_categories:
-        listings = [
-            listing for listing in listings
-            if listing.get("category", "").lower() in [cat.lower() for cat in selected_categories]
-        ]
-
-    # Apply filtering based on deal type (if selected)
-    if selected_deal_types:
-        filtered_listings = []
-        for listing in listings:
-            net_profit = listing.get("net_profit", 0)
-            if net_profit < 10:
-                deal_type = "fair"
-            elif net_profit < 30:
-                deal_type = "good"
-            else:
-                deal_type = "great"
-            if deal_type in [dt.lower() for dt in selected_deal_types]:
-                filtered_listings.append(listing)
-        listings = filtered_listings
-
-    # No server-side sorting is applied now. Client-side JavaScript will handle sorting.
-    return render_template('index.html', 
-                           deals=listings, 
-                           selected_categories=selected_categories, 
-                           selected_deal_types=selected_deal_types)
+    return render_template('index.html', deals=listings)
 
 if __name__ == '__main__':
     app.run(debug=True)
