@@ -100,6 +100,9 @@
             <strong>Estimated Sale Price:</strong> 
             {% if deal.estimated_sale_price is not none %}
               ${{ deal.estimated_sale_price }}
+              {% if deal.estimated_sale_source %}
+                {{ deal.estimated_sale_source }}
+              {% endif %}
             {% else %}
               low sales data
             {% endif %}

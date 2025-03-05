@@ -282,27 +282,27 @@ def scrape_terapeak_avg_price(query):
 def get_fair_market_value(cpu_model, condition="Used"):
     """
     Determines the fair market value for a CPU model.
-    First, it removes the GHz portion from the CPU model to form a search query.
-    It then attempts to scrape the Seller Hub research page via Playwright.
-    If successful, the scraped value is cached and returned.
-    Otherwise, it falls back to using the eBay API median price.
+    Returns a tuple: (price, low_sales_flag, pricing_source)
     """
     # Remove the GHz portion from the query for better search results.
     query_for_scrape = re.sub(r'\s*\d+\.\d+\s*GHz', '', cpu_model, flags=re.IGNORECASE).strip()
 
+    # Check cache (now storing a tuple: (price, low_sales_flag, pricing_source))
     if cpu_model in SCRAPED_PRICE_CACHE:
+        cached_value, cached_flag, cached_source = SCRAPED_PRICE_CACHE[cpu_model]
         if DEBUG:
-            print(f"Using cached scraped price for {cpu_model}: {SCRAPED_PRICE_CACHE[cpu_model]}")
-        return SCRAPED_PRICE_CACHE[cpu_model], False
+            print(f"Using cached scraped price for {cpu_model}: {cached_value}")
+        return cached_value, cached_flag, cached_source
 
+    # First, try the Seller Hub scraping (Terapeak / Sold Listings)
     seller_hub_value = get_seller_hub_metric_value(query=query_for_scrape, headless=False)
     if seller_hub_value is not None:
-        SCRAPED_PRICE_CACHE[cpu_model] = seller_hub_value
+        SCRAPED_PRICE_CACHE[cpu_model] = (seller_hub_value, False, "(Sold Listings)")
         if DEBUG:
             print(f"Using Playwright scraped value for {cpu_model}: {seller_hub_value}")
-        return seller_hub_value, False
+        return seller_hub_value, False, "(Sold Listings)"
 
-    # Fallback to eBay API method
+    # Fallback to eBay API method (Active Listings)
     token = get_ebay_oauth_token()
     url = "https://api.ebay.com/buy/browse/v1/item_summary/search"
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
@@ -340,19 +340,19 @@ def get_fair_market_value(cpu_model, condition="Used"):
                 if DEBUG:
                     print(f"Median fair market value for '{cpu_model}' (condition: {condition}): ${fair_value:.2f}{' (low sales data)' if low_sales_flag else ''}")
                     print("-------")
-                return fair_value, low_sales_flag
+                return fair_value, low_sales_flag, "(Active Listings)"
             else:
                 if DEBUG:
                     print(f"No active listing data for '{cpu_model}' (condition: {condition})")
-                return None, False
+                return None, False, None
         else:
             if DEBUG:
                 print(f"Error fetching listings for '{short_model}': {response.status_code} {response.text}")
-            return None, False
+            return None, False, None
     except Exception as e:
         if DEBUG:
             print(f"Exception fetching prices for '{short_model}': {e}")
-        return None, False
+        return None, False, None
 
 def process_listing(item, cache_expiry, now):
     creation_date_str = item.get("itemCreationDate", "")
@@ -383,6 +383,7 @@ def process_listing(item, cache_expiry, now):
         "post_date": post_date,
         "cpu_model": None,
         "estimated_sale_price": None,
+        "estimated_sale_source": None,  # New field for pricing source
         "itemCreationDate": creation_date_str
     }
     if "cpu" in listing_data["category"].lower() or "processor" in listing_data["title"].lower():
@@ -391,13 +392,15 @@ def process_listing(item, cache_expiry, now):
         extracted_model = extract_cpu_model(listing_data["title"])
         if extracted_model:
             listing_data["cpu_model"] = extracted_model
-            cpu_value, low_sales_flag = get_fair_market_value(extracted_model, condition=listing_data["condition"])
+            # Unpack the new tuple with pricing source
+            cpu_value, low_sales_flag, pricing_source = get_fair_market_value(extracted_model, condition=listing_data["condition"])
             if cpu_value is not None:
                 final_value = cpu_value * multiplier
+                price_str = f"{final_value:.2f}"
                 if low_sales_flag:
-                    listing_data["estimated_sale_price"] = f"{final_value:.2f} (low sales data)"
-                else:
-                    listing_data["estimated_sale_price"] = f"{final_value:.2f}"
+                    price_str += " (low sales data)"
+                listing_data["estimated_sale_price"] = price_str
+                listing_data["estimated_sale_source"] = pricing_source
                 listing_data["net_profit"] = round(final_value - (listing_data["price"] + listing_data["shipping_cost"]), 2)
                 if listing_data["net_profit"] < 10:
                     listing_data["deal_type"] = "fair"
