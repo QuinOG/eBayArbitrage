@@ -6,15 +6,13 @@ from mysql.connector import Error
 
 app = Flask(__name__)
 
-# --- Database Functions (from your one-file model) ---
-
 def get_db_connection():
     try:
         connection = mysql.connector.connect(
             host='127.0.0.1',
-            port=3306,  # Update if using a different port (e.g., 8889 for MAMP on macOS)
+            port=3306,
             user='root',
-            password='root',  # Replace with your actual password
+            password='root',
             database='computer_parts_db'
         )
         return connection
@@ -56,17 +54,16 @@ def find_good_deals():
         except (ValueError, KeyError):
             continue
         net_profit = calculate_net_profit(purchase_price, shipping_cost, tax_estimate)
-        if net_profit >= 30:  # Use your threshold
+        if net_profit >= 30:
             item["net_profit"] = round(net_profit, 2)
             good_deals.append(item)
     return good_deals
 
-# --- Flask Routes ---
-
 @app.route('/', methods=['GET'])
 def index():
-    # Retrieve the keyword from query parameters; filtering/sorting is now client-side.
     keyword = request.args.get('keyword', 'computer parts')
+    # Pass the "force_refresh" flag if set in the query parameters.
+    force_refresh = request.args.get('force_refresh', 'false').lower() == 'true'
     try:
         listings = get_ebay_listings(keyword=keyword, limit=50)
     except Exception as e:
