@@ -54,75 +54,15 @@
     </div>
   </header>
   
-  <div class="container">
-    {% if deals %}
-      {% for deal in deals %}
-        {# Determine deal type #}
-        {% set d_type = 'fair' %}
-        {% if deal.net_profit is not none %}
-          {% if deal.net_profit < 10 %}
-            {% set d_type = 'fair' %}
-          {% elif deal.net_profit < 30 %}
-            {% set d_type = 'good' %}
-          {% else %}
-            {% set d_type = 'great' %}
-          {% endif %}
-        {% endif %}
-        <div class="card {% if d_type == 'fair' %}fair-deal-card{% elif d_type == 'good' %}good-deal-card{% else %}great-deal-card{% endif %}"
-             data-deal-type="{{ d_type }}"
-             data-category="{{ deal.category }}"
-             data-cpu="{{ deal.cpu_model if deal.cpu_model else deal.title }}"
-             data-net-profit="{{ deal.net_profit if deal.net_profit is not none else 0 }}"
-             data-price="{{ deal.price }}"
-             data-created="{{ deal.itemCreationDate }}">
-          <div class="card-header {% if d_type == 'fair' %}fair-deal-header{% elif d_type == 'good' %}good-deal-header{% else %}great-deal-header{% endif %}">
-            {% if deal.net_profit is not none %}
-              {% if deal.net_profit < 10 %}
-                Fair Deal
-              {% elif deal.net_profit < 30 %}
-                Good Deal
-              {% else %}
-                Great Deal
-              {% endif %}
-            {% else %}
-              Low Sales Data
-            {% endif %}
-          </div>
-          <h2>
-            {% if deal.cpu_model %}
-              {{ deal.cpu_model }}
-            {% else %}
-              {{ deal.title }}
-            {% endif %}
-          </h2>
-          <p><strong>Price:</strong> ${{ deal.price }}</p>
-          <p>
-            <strong>Estimated Sale Price:</strong> 
-            {% if deal.estimated_sale_price is not none %}
-              ${{ deal.estimated_sale_price }}
-              {% if deal.estimated_sale_source %}
-                {{ deal.estimated_sale_source }}
-              {% endif %}
-            {% else %}
-              low sales data
-            {% endif %}
-          </p>
-          <p>
-            <strong>Net Profit:</strong> 
-            {% if deal.net_profit is not none %}
-              ${{ deal.net_profit }}
-            {% else %}
-              low sales data
-            {% endif %}
-          </p>
-          <p><strong>Condition:</strong> {{ deal.condition }}</p>
-          <p><strong>Listed:</strong> {{ deal.post_date }}</p>
-          <p><a href="{{ deal.listing_url }}" target="_blank">View Listing</a></p>
-        </div>      
-      {% endfor %}
-    {% else %}
-      <p>No good deals found at this time.</p>
-    {% endif %}
+  <!-- Loading Screen -->
+  <div id="loading" class="loading-screen">
+    <div class="spinner"></div>
+    <p>Loading deals...</p>
+  </div>
+
+  <!-- Deals Container (initially hidden) -->
+  <div id="deals-container" class="container" style="display:none;">
+    <!-- Deal cards will be dynamically injected here -->
   </div>
   
   <footer>

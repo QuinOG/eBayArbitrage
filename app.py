@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from ebay_api import get_ebay_listings
 from dummy_deals import dummy_deals
 import mysql.connector
@@ -61,15 +61,19 @@ def find_good_deals():
 
 @app.route('/', methods=['GET'])
 def index():
+    # Render the main page; deals will be loaded dynamically via JavaScript.
+    return render_template('index.html')
+
+# New API endpoint for asynchronous loading of deals.
+@app.route('/api/deals', methods=['GET'])
+def api_deals():
     keyword = request.args.get('keyword', 'computer parts')
-    # Pass the "force_refresh" flag if set in the query parameters.
-    force_refresh = request.args.get('force_refresh', 'false').lower() == 'true'
     try:
         listings = get_ebay_listings(keyword=keyword, limit=50)
     except Exception as e:
         print(e)
-        listings = []  # Fallback to empty list or dummy_deals
-    return render_template('index.html', deals=listings)
+        listings = []
+    return jsonify(listings)
 
 if __name__ == '__main__':
     app.run(debug=True)

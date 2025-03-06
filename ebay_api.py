@@ -170,13 +170,21 @@ def extract_cpu_model(title):
             print(f"Original title: '{title}'")
             print(f"Extracted model: '{extracted}'")
         extracted_title = extracted.title().replace("Ghz", "GHz")
+        # Skip non-consumer keywords
         non_consumer_keywords = ["epyc", "core duo", "power mac"]
         if any(keyword in extracted_title.lower() for keyword in non_consumer_keywords):
             if DEBUG:
                 print(f"Skipping non-consumer CPU model: '{extracted_title}'")
                 print("-------")
             return None
-        if not is_consumer_cpu(extracted_title) and "xeon" not in extracted_title.lower():
+        # Completely skip Xeon processors
+        if "xeon" in extracted_title.lower():
+            if DEBUG:
+                print(f"Skipping Xeon processor: '{extracted_title}'")
+                print("-------")
+            return None
+        # Also skip if not consumer (though Xeon is already skipped)
+        if not is_consumer_cpu(extracted_title):
             if DEBUG:
                 print(f"Skipping non-consumer CPU model: '{extracted_title}'")
                 print("-------")
@@ -242,18 +250,10 @@ def format_time_ago(post_date_str):
             print(f"Error formatting time ago: {e}")
         return "N/A"
 
-import re
-import statistics
-import requests
-from bs4 import BeautifulSoup
-from datetime import datetime
-
-DEBUG = True
-
 def scrape_terapeak_recent_median(query, num_sales=5):
     """
-    Scrapes the Terapeak (Seller Hub) results table for the `num_sales` most recent sales
-    of `query`, returning the median price. Falls back to the aggregated `metric-value`
+    Scrapes the Terapeak (Seller Hub) results table for the num_sales most recent sales
+    of query, returning the median price. Falls back to the aggregated metric-value
     if not enough rows are found.
     """
     encoded_query = requests.utils.quote(query)
@@ -330,13 +330,6 @@ def scrape_terapeak_recent_median(query, num_sales=5):
                 print(f"Skipping row with unparseable date: {date_str}")
             continue
 
-        # Optional: Skip "lot" listings if desired
-        # row_text = row.get_text(separator=" ").lower()
-        # if "lot" in row_text:
-        #     if DEBUG:
-        #         print("Skipping row due to 'lot':", row_text)
-        #     continue
-
         listings.append((date_obj, price_val))
 
     if not listings:
@@ -346,7 +339,7 @@ def scrape_terapeak_recent_median(query, num_sales=5):
 
     # Sort by date descending (newest first)
     listings.sort(key=lambda x: x[0], reverse=True)
-    # Take the top `num_sales` (e.g. 5)
+    # Take the top num_sales (e.g. 5)
     top_n = listings[:num_sales]
     prices = [p for (_, p) in top_n]
 
@@ -558,12 +551,52 @@ def get_ebay_listings(keyword="computer parts", limit=20, cache_expiry=14400):
     sort_order = {"great": 0, "good": 1, "fair": 2}
     return sorted(listings, key=lambda l: sort_order.get(l.get("deal_type", "fair"), 2))
 
+# ----------------------------------------------------------
+# New helper function to scrape multiple queries concurrently
+# ----------------------------------------------------------
+def get_seller_hub_metric_values(queries, headless=False, day_range=30, category_id=164, limit=50, tz="America/New_York"):
+    """
+    Takes a list of queries and scrapes the Seller Hub metric value for each one
+    in parallel using ThreadPoolExecutor. Returns a dict of {query: metric_value}.
+    """
+    results = {}
+
+    def scrape_one(q):
+        return (q, get_seller_hub_metric_value(query=q, headless=headless, day_range=day_range, category_id=category_id, limit=limit, tz=tz))
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_to_query = {executor.submit(scrape_one, q): q for q in queries}
+        for future in concurrent.futures.as_completed(future_to_query):
+            query_str = future_to_query[future]
+            try:
+                q, metric = future.result()
+                results[q] = metric
+            except Exception as e:
+                if DEBUG:
+                    print(f"Error scraping query '{query_str}': {e}")
+                results[query_str] = None
+
+    return results
+
+# ----------------------------------------------------------
+# Main execution
+# ----------------------------------------------------------
 if __name__ == "__main__":
     try:
-        # For initial login, run with headless=False once:
-        # metric = get_seller_hub_metric_value(query="Intel Core I5-7500T 2.7GHz", headless=False)
-        # print(f"Metric value (manual login required): {metric}")
-        
+        # Example: scrape 3 queries concurrently via Seller Hub
+        queries_to_scrape = [
+            "Intel Core i5-7500T 2.7GHz",
+            "AMD Ryzen 5 3600",
+            "Intel Core i7-8700K"
+        ]
+
+        # IMPORTANT: For your very first run, use headless=False so you can log in manually.
+        metrics = get_seller_hub_metric_values(queries_to_scrape, headless=False)
+        print("Scraped Seller Hub metric values:")
+        for query_str, value in metrics.items():
+            print(f"  {query_str} => {value}")
+
+        # Additionally, you can continue with your eBay listings scraping:
         listings = get_ebay_listings(keyword="computer parts", limit=20)
         for listing in listings:
             print(listing)
