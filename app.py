@@ -1,8 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
-from ebay_api import get_ebay_listings
+from flask import Flask, render_template, request, Response, stream_with_context
+from ebay_api import get_ebay_listings, get_ebay_oauth_token, process_listing
 from dummy_deals import dummy_deals
 import mysql.connector
 from mysql.connector import Error
+import json
+import time
+import concurrent.futures
+from datetime import datetime, timezone
+from ebay_api import get_ebay_listings_stream
+import jsonify
+from ebay_api import async_get_ebay_listings
 
 app = Flask(__name__)
 
@@ -64,15 +71,19 @@ def index():
     # Render the main page; deals will be loaded dynamically via JavaScript.
     return render_template('index.html')
 
-# New API endpoint for asynchronous loading of deals.
-@app.route('/api/deals', methods=['GET'])
-def api_deals():
+@app.route('/api/deals/stream', methods=['GET'])
+def api_deals_stream():
     keyword = request.args.get('keyword', 'computer parts')
-    try:
-        listings = get_ebay_listings(keyword=keyword, limit=50)
-    except Exception as e:
-        print(e)
-        listings = []
+    def generate():
+        # Yield each processed deal as a JSON line.
+        for deal in get_ebay_listings_stream(keyword=keyword, limit=50):
+            yield json.dumps(deal) + "\n"
+    return Response(stream_with_context(generate()), mimetype='application/json')
+
+@app.route('/api/deals/async', methods=['GET'])
+async def api_deals_async():
+    keyword = request.args.get('keyword', 'computer parts')
+    listings = await async_get_ebay_listings(keyword=keyword, limit=20)
     return jsonify(listings)
 
 if __name__ == '__main__':
