@@ -1,0 +1,4 @@
+- fix sold scraping method (currently defaulting to avg sold price point - need to grab median price of 5 sold listings)
+- figure out why its only scraping 3 listings then deafulting to use active on the rest
+- speed up scraping process?
+- add support for gpus
