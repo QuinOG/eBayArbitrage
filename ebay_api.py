@@ -242,13 +242,26 @@ def format_time_ago(post_date_str):
             print(f"Error formatting time ago: {e}")
         return "N/A"
 
-def scrape_terapeak_avg_price(query):
+import re
+import statistics
+import requests
+from bs4 import BeautifulSoup
+from datetime import datetime
+
+DEBUG = True
+
+def scrape_terapeak_recent_median(query, num_sales=5):
     """
-    Attempts to scrape Terapeak (or Seller Hub) for the average sold price using requests.
-    This is a fallback method.
+    Scrapes the Terapeak (Seller Hub) results table for the `num_sales` most recent sales
+    of `query`, returning the median price. Falls back to the aggregated `metric-value`
+    if not enough rows are found.
     """
-    encoded_query = urllib.parse.quote(query)
-    url = f"https://www.ebay.com/sh/research?marketplace=EBAY-US&keywords={encoded_query}&dayRange=30&categoryId=164&limit=50&tabName=SOLD&tz=America%2FNew_York"
+    encoded_query = requests.utils.quote(query)
+    url = (
+        "https://www.ebay.com/sh/research"
+        f"?marketplace=EBAY-US&keywords={encoded_query}&dayRange=30"
+        "&categoryId=164&limit=50&tabName=SOLD&tz=America%2FNew_York"
+    )
     headers = {
         "User-Agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -256,27 +269,133 @@ def scrape_terapeak_avg_price(query):
             "Chrome/90.0.4430.93 Safari/537.36"
         )
     }
+
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
         if DEBUG:
             print(f"Scrape failed: HTTP {response.status_code}")
         return None
+
     soup = BeautifulSoup(response.text, "html.parser")
-    price_div = soup.find("div", class_="metric-value")
-    if price_div:
-        avg_price_str = price_div.get_text(strip=True).replace("$", "").replace(",", "")
+
+    # Find the main table
+    table = soup.find("table", class_="terapeak-table content static-table table-content-default")
+    if not table:
+        if DEBUG:
+            print("Could not locate the Terapeak table. Falling back to aggregated metric.")
+        return fallback_metric_value(soup)
+
+    tbody = table.find("tbody")
+    if not tbody:
+        if DEBUG:
+            print("No <tbody> found in Terapeak table. Falling back to aggregated metric.")
+        return fallback_metric_value(soup)
+
+    # Each sold listing is a <tr> with class "research-table-row_item research-table-row_item-subtitle"
+    rows = tbody.find_all("tr", class_="research-table-row_item research-table-row_item-subtitle")
+    if not rows:
+        if DEBUG:
+            print("No matching <tr> rows found. Falling back to aggregated metric.")
+        return fallback_metric_value(soup)
+
+    listings = []
+    for row in rows:
+        cells = row.find_all("td")
+        # Typically, we expect columns like:
+        # 0: Price (e.g. "$57.65/fixed price")
+        # 1: Shipping
+        # 2: ...
+        # 3: ...
+        # 4: Date last sold
+        if len(cells) < 5:
+            continue
+
+        # 1) Parse price from the first cell
+        price_str = cells[0].get_text(strip=True)
+        # e.g. "$57.65/fixed price" => split by '/' to drop "fixed price"
+        price_str = price_str.split("/")[0].strip()
+        price_str = price_str.replace("$", "").replace(",", "")
         try:
-            avg_price = float(avg_price_str)
+            price_val = float(price_str)
+        except ValueError:
             if DEBUG:
-                print(f"Scraped Terapeak average price for '{query}': {avg_price}")
-            return avg_price
-        except Exception as e:
+                print(f"Skipping row with invalid price: {price_str}")
+            continue
+
+        # 2) Parse date from the 5th cell
+        date_str = cells[4].get_text(strip=True)
+        date_obj = parse_terapeak_date(date_str)  # We'll define parse_terapeak_date below
+        if not date_obj:
             if DEBUG:
-                print(f"Error parsing scraped price: {e}")
+                print(f"Skipping row with unparseable date: {date_str}")
+            continue
+
+        # Optional: Skip "lot" listings if desired
+        # row_text = row.get_text(separator=" ").lower()
+        # if "lot" in row_text:
+        #     if DEBUG:
+        #         print("Skipping row due to 'lot':", row_text)
+        #     continue
+
+        listings.append((date_obj, price_val))
+
+    if not listings:
+        if DEBUG:
+            print("No valid listings after parsing. Falling back to aggregated metric.")
+        return fallback_metric_value(soup)
+
+    # Sort by date descending (newest first)
+    listings.sort(key=lambda x: x[0], reverse=True)
+    # Take the top `num_sales` (e.g. 5)
+    top_n = listings[:num_sales]
+    prices = [p for (_, p) in top_n]
+
+    # If you end up with fewer than 2 data points, you can decide how to handle that
+    if len(prices) < 2:
+        if DEBUG:
+            print("Not enough recent listings for a median. Falling back to aggregated metric.")
+        return fallback_metric_value(soup)
+
+    # Compute median of these top N
+    median_price = statistics.median(prices)
+    if DEBUG:
+        print(f"Median of the {len(top_n)} most recent sales for '{query}': {median_price}")
+    return median_price
+
+def parse_terapeak_date(date_str):
+    """
+    Example date parser. Adjust to the exact format used by your table's date cell.
+    For instance, if it's '3/1/2025' or '03/01/2025', we can do this:
+    """
+    # Remove any text like "Sold on" or "Fixed Price" etc.
+    # Just keep digits and slashes:
+    cleaned = re.sub(r"[^0-9/]", "", date_str)
+    try:
+        # Attempt MM/DD/YYYY
+        return datetime.strptime(cleaned, "%m/%d/%Y")
+    except ValueError:
+        return None
+
+def fallback_metric_value(soup):
+    """
+    Attempts to parse the aggregated metric-value on the page
+    if the row-level approach fails.
+    """
+    metric_div = soup.find("div", class_="metric-value")
+    if metric_div:
+        raw = metric_div.get_text(strip=True).replace("$", "").replace(",", "")
+        try:
+            val = float(raw)
+            if DEBUG:
+                print(f"Using fallback aggregated metric: {val}")
+            return val
+        except ValueError:
+            if DEBUG:
+                print(f"Error parsing fallback metric-value: {raw}")
             return None
     else:
         if DEBUG:
-            print("Could not find average price element on Terapeak page")
+            print("No aggregated metric-value found.")
         return None
 
 def get_fair_market_value(cpu_model, condition="Used"):
