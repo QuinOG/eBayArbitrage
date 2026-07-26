@@ -1,0 +1,15 @@
+{
+  "name": "ebay-arbitrage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser assets for the eBay arbitrage application",
+  "scripts": {
+    "check": "node --check static/main.js",
+    "lint": "npm run check",
+    "test": "npm run check"
+  },
+  "engines": {
+    "node": ">=18",
+    "npm": ">=9"
+  }
+}
