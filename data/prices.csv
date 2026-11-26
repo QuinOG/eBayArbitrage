@@ -1,0 +1,1243 @@
+part,model,value,sales,confidence,kind
+cpu,Core i7-8700,61.0,26,high,exact
+cpu,Core i7-6700,25.73,21,high,exact
+cpu,Core i7-4790,35.49,18,high,exact
+cpu,Core i5-10500,79.0,17,high,exact
+cpu,Core i5-10500T,73.03,15,high,exact
+cpu,Ryzen 5 5600X,129.54,13,high,exact
+cpu,Core i5-8500,30.97,12,high,exact
+cpu,Core i7-10700,120.0,12,high,exact
+cpu,Core i7-3770,32.0,12,high,exact
+cpu,Ryzen 5 3600,69.99,11,high,exact
+cpu,Ryzen 7 7800X3D,274.99,11,high,exact
+cpu,Core i7-6700K,30.0,10,high,exact
+cpu,Core i7-7700,42.33,10,high,exact
+cpu,Core i7-9700,84.11,10,high,exact
+cpu,Core i7-9700K,92.33,10,high,exact
+cpu,Core i7-4770,31.2,9,high,exact
+cpu,Core i5-9500,41.98,8,high,exact
+cpu,Core i9-9900K,166.85,8,high,exact
+cpu,Ryzen 5 5500,75.42,8,high,exact
+cpu,Ryzen 5 9600X,130.0,8,high,exact
+cpu,Core i5-14500T,139.47,7,high,exact
+cpu,Core i5-8400,35.0,7,high,exact
+cpu,Core i7-11700,145.0,7,high,exact
+cpu,Ryzen 7 2700X,50.99,7,high,exact
+cpu,Ryzen 7 5800X,159.99,7,high,exact
+cpu,Core i5-12500T,115.0,6,high,exact
+cpu,Core i5-14500,146.52,6,high,exact
+cpu,Core i7-8700K,60.59,6,high,exact
+cpu,Ryzen 5 5600G,115.98,6,high,exact
+cpu,Ryzen 7 3700X,92.78,6,high,exact
+cpu,Ryzen 9 5900X,217.98,6,high,exact
+cpu,Xeon Silver 4215R,111.49,6,high,exact
+cpu,Core i5-10505,85.65,5,high,exact
+cpu,Core i5-11500,102.05,5,high,exact
+cpu,Core i5-12400,119.95,5,high,exact
+cpu,Core i5-6500,12.7,5,high,exact
+cpu,Core i5-8500T,31.72,5,high,exact
+cpu,Core i7-12700,176.97,5,high,exact
+cpu,Core i7-14700F,229.99,5,high,exact
+cpu,Core i7-14700T,241.56,5,high,exact
+cpu,Core i7-4790K,64.99,5,high,exact
+cpu,Ryzen 5 2600,39.01,5,high,exact
+cpu,Ryzen 5 3600X,71.47,5,high,exact
+cpu,Ryzen 5 7600X,110.0,5,high,exact
+cpu,Core i3-10100T,57.52,4,high,exact
+cpu,Core i5-10400F,72.74,4,high,exact
+cpu,Core i5-12500,137.78,4,high,exact
+cpu,Core i5-13500,155.99,4,high,exact
+cpu,Core i5-13500T,130.0,4,high,exact
+cpu,Core i5-9600K,48.99,4,high,exact
+cpu,Core i7-10700T,127.89,4,high,exact
+cpu,Core i7-2600,24.99,4,high,exact
+cpu,Core i7-6700T,30.65,4,high,exact
+cpu,Core i7-7700K,68.5,4,high,exact
+cpu,Core i7-9700T,125.46,4,high,exact
+cpu,Core i9-10850K,188.76,4,high,exact
+cpu,Core i9-9900,169.0,4,high,exact
+cpu,Ryzen 7 5700G,144.97,4,high,exact
+cpu,Ryzen 7 5800X3D,299.99,4,high,exact
+cpu,Ryzen 7 9800X3D,341.51,4,high,exact
+cpu,Ryzen 9 3900X,138.59,4,high,exact
+cpu,Xeon Gold 6450C,62.0,4,high,exact
+cpu,Xeon Silver 4210R,126.81,4,high,exact
+cpu,Core Ultra 9 285K,390.49,3,high,exact
+cpu,Core i3-12100,87.0,3,high,exact
+cpu,Core i5-11400,94.99,3,high,exact
+cpu,Core i5-12600K,150.72,3,high,exact
+cpu,Core i5-14400F,139.0,3,high,exact
+cpu,Core i5-4590,13.17,3,high,exact
+cpu,Core i5-9400,39.99,3,high,exact
+cpu,Core i5-9500T,45.0,3,high,exact
+cpu,Core i7-12700F,170.99,3,high,exact
+cpu,Core i7-12700T,189.0,3,high,exact
+cpu,Core i7-13700,211.63,3,high,exact
+cpu,Core i7-4770K,37.95,3,high,exact
+cpu,Core i7-7700T,38.95,3,high,exact
+cpu,Core i9-10900X,109.0,3,high,exact
+cpu,Core i9-12900K,208.4,3,high,exact
+cpu,EPYC 7513,395.0,3,high,exact
+cpu,Ryzen 3 4100,39.99,3,high,exact
+cpu,Ryzen 5 7600,117.51,3,high,exact
+cpu,Ryzen 5 8400F,80.97,3,high,exact
+cpu,Ryzen 7 7700X,133.1,3,high,exact
+cpu,Ryzen 7 9700X,219.99,3,high,exact
+cpu,Ryzen 9 5950X,299.99,3,high,exact
+cpu,Ryzen 9 7900X,199.99,3,high,exact
+cpu,Ryzen 9 7950X,309.99,3,high,exact
+cpu,Xeon -2680 v4,14.95,3,high,exact
+cpu,Xeon -2690 v4,20.48,3,high,exact
+cpu,Xeon -2697 v2,36.4,3,high,exact
+cpu,Core Ultra 7 265,197.0,2,low,exact
+cpu,Core Ultra 7 265K,208.0,2,low,exact
+cpu,Core Ultra 7 265KF,201.62,2,low,exact
+cpu,Core i3-10100,53.34,2,low,exact
+cpu,Core i3-10105F,44.24,2,low,exact
+cpu,Core i3-12100F,71.49,2,low,exact
+cpu,Core i3-8100,16.83,2,low,exact
+cpu,Core i5-10400,93.98,2,low,exact
+cpu,Core i5-10600,86.5,2,low,exact
+cpu,Core i5-11400F,87.49,2,low,exact
+cpu,Core i5-11600,840.98,2,low,exact
+cpu,Core i5-12400F,114.86,2,low,exact
+cpu,Core i5-12600T,111.25,2,low,exact
+cpu,Core i5-13400F,108.28,2,low,exact
+cpu,Core i5-4590T,15.47,2,low,exact
+cpu,Core i5-6600,18.9,2,low,exact
+cpu,Core i5-6600K,14.82,2,low,exact
+cpu,Core i5-7400,11.87,2,low,exact
+cpu,Core i5-7500,21.5,2,low,exact
+cpu,Core i5-7500T,13.2,2,low,exact
+cpu,Core i5-9400F,33.78,2,low,exact
+cpu,Core i5-9400T,66.0,2,low,exact
+cpu,Core i7-10700K,155.0,2,low,exact
+cpu,Core i7-12700K,180.75,2,low,exact
+cpu,Core i7-12700KF,177.0,2,low,exact
+cpu,Core i7-13700F,197.11,2,low,exact
+cpu,Core i7-13700K,227.5,2,low,exact
+cpu,Core i7-14700KF,252.48,2,low,exact
+cpu,Core i7-2700K,45.0,2,low,exact
+cpu,Core i7-3770K,41.49,2,low,exact
+cpu,Core i7-4770S,28.99,2,low,exact
+cpu,Core i7-8700T,72.1,2,low,exact
+cpu,Core i7-9700F,84.59,2,low,exact
+cpu,Core i9-10900K,206.18,2,low,exact
+cpu,Core i9-11900K,259.79,2,low,exact
+cpu,Core i9-14900KF,263.13,2,low,exact
+cpu,EPYC 7252,47.95,2,low,exact
+cpu,EPYC 7443,236.0,2,low,exact
+cpu,EPYC 7452,158.67,2,low,exact
+cpu,EPYC 7763,1775.48,2,low,exact
+cpu,Ryzen 3 2200G,29.81,2,low,exact
+cpu,Ryzen 5 1600,21.62,2,low,exact
+cpu,Ryzen 5 1600X,32.19,2,low,exact
+cpu,Ryzen 5 2400G,29.99,2,low,exact
+cpu,Ryzen 5 2600X,66.33,2,low,exact
+cpu,Ryzen 5 3400G,61.25,2,low,exact
+cpu,Ryzen 5 3400GE,37.5,2,low,exact
+cpu,Ryzen 5 3500X,66.25,2,low,exact
+cpu,Ryzen 5 4500,50.66,2,low,exact
+cpu,Ryzen 5 4650GE,57.87,2,low,exact
+cpu,Ryzen 5 5600,98.9,2,low,exact
+cpu,Ryzen 5 8500G,115.64,2,low,exact
+cpu,Ryzen 7 1700,33.77,2,low,exact
+cpu,Ryzen 7 5700,130.2,2,low,exact
+cpu,Ryzen 7 5700X,153.01,2,low,exact
+cpu,Ryzen 7 5800XT,152.18,2,low,exact
+cpu,Ryzen 9 3900XT,171.07,2,low,exact
+cpu,Ryzen 9 3950X,134.41,2,low,exact
+cpu,Ryzen 9 5900XT,262.91,2,low,exact
+cpu,Ryzen 9 9950X3D,490.86,2,low,exact
+cpu,Threadripper 2990WX,469.3,2,low,exact
+cpu,Xeon -2620 v4,5.62,2,low,exact
+cpu,Xeon -2667 v4,23.46,2,low,exact
+cpu,Xeon -2695V,17.88,2,low,exact
+cpu,Xeon -2697 v4,25.49,2,low,exact
+cpu,Xeon -2697A v4,49.99,2,low,exact
+cpu,Xeon -2699 v4,78.85,2,low,exact
+cpu,Xeon -2699V,48.35,2,low,exact
+cpu,Xeon E5645,10.54,2,low,exact
+cpu,Xeon Gold 5218R,35.69,2,low,exact
+cpu,Xeon Gold 6144,40.97,2,low,exact
+cpu,Xeon Gold 6226R,608.08,2,low,exact
+cpu,Xeon Gold 6230R,169.95,2,low,exact
+cpu,Xeon Gold 6242,67.38,2,low,exact
+cpu,Xeon Gold 6244,91.81,2,low,exact
+cpu,Xeon Gold 6248,68.0,2,low,exact
+cpu,Xeon Platinum 8268,123.37,2,low,exact
+cpu,Xeon W-2245,168.44,2,low,exact
+cpu,Xeon W-2255,197.0,2,low,exact
+cpu,Core 2 E5345,7.5,1,low,exact
+cpu,Core 2 E5800,12.43,1,low,exact
+cpu,Core 2 E6600,21.99,1,low,exact
+cpu,Core 2 E8400,4.63,1,low,exact
+cpu,Core 2 E8500,9.5,1,low,exact
+cpu,Core 2 Q9400,13.71,1,low,exact
+cpu,Core 2 Q9450,24.0,1,low,exact
+cpu,Core 2 Q9505,21.0,1,low,exact
+cpu,Core Ultra 5 225,99.99,1,low,exact
+cpu,Core Ultra 5 235,96.47,1,low,exact
+cpu,Core Ultra 5 235T,89.0,1,low,exact
+cpu,Core Ultra 5 245,131.56,1,low,exact
+cpu,Core Ultra 7 265F,185.0,1,low,exact
+cpu,Core i3-10105,50.0,1,low,exact
+cpu,Core i3-13100T,85.52,1,low,exact
+cpu,Core i3-14100T,78.5,1,low,exact
+cpu,Core i3-2330M,7.95,1,low,exact
+cpu,Core i3-3110M,7.95,1,low,exact
+cpu,Core i3-6100,12.55,1,low,exact
+cpu,Core i3-7300,15.5,1,low,exact
+cpu,Core i3-8100T,17.0,1,low,exact
+cpu,Core i3-9100,18.5,1,low,exact
+cpu,Core i3-9300,35.0,1,low,exact
+cpu,Core i5-10400T,70.0,1,low,exact
+cpu,Core i5-10600K,123.37,1,low,exact
+cpu,Core i5-10600KF,90.72,1,low,exact
+cpu,Core i5-10600T,80.0,1,low,exact
+cpu,Core i5-13400,155.0,1,low,exact
+cpu,Core i5-13600K,206.85,1,low,exact
+cpu,Core i5-13600T,134.0,1,low,exact
+cpu,Core i5-14400,129.99,1,low,exact
+cpu,Core i5-14600,219.99,1,low,exact
+cpu,Core i5-14600K,229.99,1,low,exact
+cpu,Core i5-14600KF,199.35,1,low,exact
+cpu,Core i5-14600T,180.17,1,low,exact
+cpu,Core i5-2405S,21.99,1,low,exact
+cpu,Core i5-2500K,14.17,1,low,exact
+cpu,Core i5-3340S,15.66,1,low,exact
+cpu,Core i5-3570,12.99,1,low,exact
+cpu,Core i5-3570K,18.0,1,low,exact
+cpu,Core i5-4460,10.97,1,low,exact
+cpu,Core i5-4570,12.56,1,low,exact
+cpu,Core i5-4590S,8.0,1,low,exact
+cpu,Core i5-4690K,25.02,1,low,exact
+cpu,Core i5-4690S,15.0,1,low,exact
+cpu,Core i5-6400,10.67,1,low,exact
+cpu,Core i5-6500T,7.99,1,low,exact
+cpu,Core i5-7600,19.15,1,low,exact
+cpu,Core i5-7600K,36.99,1,low,exact
+cpu,Core i5-7600T,19.99,1,low,exact
+cpu,Core i5-8400T,24.99,1,low,exact
+cpu,Core i5-8600,33.99,1,low,exact
+cpu,Core i5-8600K,34.95,1,low,exact
+cpu,Core i7-11700F,139.99,1,low,exact
+cpu,Core i7-11700K,150.0,1,low,exact
+cpu,Core i7-11700T,135.0,1,low,exact
+cpu,Core i7-13700KF,209.99,1,low,exact
+cpu,Core i7-14700K,291.67,1,low,exact
+cpu,Core i7-2820QM,38.5,1,low,exact
+cpu,Core i7-3770S,64.65,1,low,exact
+cpu,Core i7-4765T,22.99,1,low,exact
+cpu,Core i7-4960X,94.99,1,low,exact
+cpu,Core i7-5930K,17.95,1,low,exact
+cpu,Core i7-6800K,30.65,1,low,exact
+cpu,Core i7-7740X,19.99,1,low,exact
+cpu,Core i7-7800X,52.2,1,low,exact
+cpu,Core i7-9700KF,84.99,1,low,exact
+cpu,Core i9-10900,299.99,1,low,exact
+cpu,Core i9-10920X,230.0,1,low,exact
+cpu,Core i9-10980XE,249.0,1,low,exact
+cpu,Core i9-11900KF,241.99,1,low,exact
+cpu,Core i9-11900T,359.99,1,low,exact
+cpu,Core i9-12900,279.99,1,low,exact
+cpu,Core i9-13900,329.99,1,low,exact
+cpu,Core i9-13900K,280.08,1,low,exact
+cpu,Core i9-13900KF,259.99,1,low,exact
+cpu,Core i9-14900KS,328.5,1,low,exact
+cpu,Core i9-7980XE,129.0,1,low,exact
+cpu,Core i9-9900T,255.78,1,low,exact
+cpu,Core i9-9920X,120.72,1,low,exact
+cpu,EPYC 7282,119.0,1,low,exact
+cpu,EPYC 7302,139.0,1,low,exact
+cpu,EPYC 7402P,59.95,1,low,exact
+cpu,EPYC 7413,156.55,1,low,exact
+cpu,EPYC 7502,239.73,1,low,exact
+cpu,EPYC 7702,703.99,1,low,exact
+cpu,Pentium G3258,20.65,1,low,exact
+cpu,Ryzen 3 1200,14.37,1,low,exact
+cpu,Ryzen 3 1300X,18.4,1,low,exact
+cpu,Ryzen 3 3100,33.99,1,low,exact
+cpu,Ryzen 3 3200G,39.99,1,low,exact
+cpu,Ryzen 5 1500X,45.54,1,low,exact
+cpu,Ryzen 5 2400GE,24.92,1,low,exact
+cpu,Ryzen 5 4600G,59.55,1,low,exact
+cpu,Ryzen 5 5600XT,126.12,1,low,exact
+cpu,Ryzen 5 5650GE,118.0,1,low,exact
+cpu,Ryzen 5 7500F,121.98,1,low,exact
+cpu,Ryzen 5 7500X3D,173.0,1,low,exact
+cpu,Ryzen 5 8600G,100.0,1,low,exact
+cpu,Ryzen 7 1800X,45.0,1,low,exact
+cpu,Ryzen 7 2700,50.0,1,low,exact
+cpu,Ryzen 7 5700X3D,298.0,1,low,exact
+cpu,Ryzen 7 7600X,116.63,1,low,exact
+cpu,Ryzen 7 8700F,99.0,1,low,exact
+cpu,Ryzen 9 7900X3D,326.84,1,low,exact
+cpu,Ryzen 9 7950X3D,319.99,1,low,exact
+cpu,Ryzen 9 9900X,270.97,1,low,exact
+cpu,Ryzen 9 9900X3D,410.0,1,low,exact
+cpu,Threadripper 3945WX,109.52,1,low,exact
+cpu,Threadripper 3960X,499.0,1,low,exact
+cpu,Threadripper 3970X,550.0,1,low,exact
+cpu,Threadripper 5975WX,1294.0,1,low,exact
+cpu,Threadripper 5995WX,559.98,1,low,exact
+cpu,Threadripper 7960X,707.55,1,low,exact
+cpu,Xeon -1230V,19.99,1,low,exact
+cpu,Xeon -1240,12.0,1,low,exact
+cpu,Xeon -1240 v5,8.99,1,low,exact
+cpu,Xeon -1241 v3,26.84,1,low,exact
+cpu,Xeon -1265L,23.99,1,low,exact
+cpu,Xeon -1270 v2,20.0,1,low,exact
+cpu,Xeon -1270 v3,39.99,1,low,exact
+cpu,Xeon -1275 v6,64.99,1,low,exact
+cpu,Xeon -1276 v3,67.99,1,low,exact
+cpu,Xeon -1650,15.0,1,low,exact
+cpu,Xeon -1650 v3,15.64,1,low,exact
+cpu,Xeon -1660 v4,142.56,1,low,exact
+cpu,Xeon -2470 v2,78.99,1,low,exact
+cpu,Xeon -2643V,39.95,1,low,exact
+cpu,Xeon -2650 v3,14.99,1,low,exact
+cpu,Xeon -2651 v2,15.0,1,low,exact
+cpu,Xeon -2673 v3,15.5,1,low,exact
+cpu,Xeon -2673 v4,19.88,1,low,exact
+cpu,Xeon -2673V,10.75,1,low,exact
+cpu,Xeon -2680 v2,17.0,1,low,exact
+cpu,Xeon -2683 v4,8.99,1,low,exact
+cpu,Xeon -2690 v2,19.95,1,low,exact
+cpu,Xeon -2690V,17.99,1,low,exact
+cpu,Xeon -2695 v2,17.2,1,low,exact
+cpu,Xeon -2695 v4,20.88,1,low,exact
+cpu,Xeon -2696V,81.9,1,low,exact
+cpu,Xeon -2697V,45.0,1,low,exact
+cpu,Xeon -2698 v4,35.99,1,low,exact
+cpu,Xeon -2699 v3,15.95,1,low,exact
+cpu,Xeon -2699A v4,240.0,1,low,exact
+cpu,Xeon -4699 v4,59.99,1,low,exact
+cpu,Xeon 1680 v4,125.0,1,low,exact
+cpu,Xeon 2470 v2,44.99,1,low,exact
+cpu,Xeon 2699A v4,144.88,1,low,exact
+cpu,Xeon E-2136,73.99,1,low,exact
+cpu,Xeon E-2176G,180.99,1,low,exact
+cpu,Xeon E-2236,79.0,1,low,exact
+cpu,Xeon E-2246G,88.0,1,low,exact
+cpu,Xeon E-2276G,149.0,1,low,exact
+cpu,Xeon E-2278G,699.96,1,low,exact
+cpu,Xeon Gold 6138,17.99,1,low,exact
+cpu,Xeon Gold 6140,9.89,1,low,exact
+cpu,Xeon Gold 6146,29.75,1,low,exact
+cpu,Xeon Gold 6212U,68.95,1,low,exact
+cpu,Xeon Gold 6230,32.0,1,low,exact
+cpu,Xeon Gold 6234,39.95,1,low,exact
+cpu,Xeon Gold 6242R,149.99,1,low,exact
+cpu,Xeon Gold 6248R,260.0,1,low,exact
+cpu,Xeon Gold 6252,53.0,1,low,exact
+cpu,Xeon Gold 6262V,56.95,1,low,exact
+cpu,Xeon Gold 6314U,375.0,1,low,exact
+cpu,Xeon Gold 6336Y,649.0,1,low,exact
+cpu,Xeon Platinum 8168,40.0,1,low,exact
+cpu,Xeon Platinum 8171M,24.99,1,low,exact
+cpu,Xeon Platinum 8173M,27.99,1,low,exact
+cpu,Xeon Platinum 8175M,14.49,1,low,exact
+cpu,Xeon Platinum 8180,138.99,1,low,exact
+cpu,Xeon Platinum 8375C,599.0,1,low,exact
+cpu,Xeon Silver 4210,9.95,1,low,exact
+cpu,Xeon Silver 4214,14.99,1,low,exact
+cpu,Xeon Silver 4309Y,309.86,1,low,exact
+cpu,Xeon W-1370P,130.0,1,low,exact
+cpu,Xeon W-2145,128.75,1,low,exact
+cpu,Xeon W-2235,49.99,1,low,exact
+cpu,Xeon W-3265M,450.0,1,low,exact
+cpu,Xeon W3680,25.8,1,low,exact
+mobo,ASUS X570-PLUS WIFI,129.22,5,high,exact
+mobo,MSI X870E-P WIFI,104.95,5,high,exact
+mobo,ASUS B450-F GAMING,76.81,4,high,exact
+mobo,ASUS B550-PLUS AC-HES,76.95,4,high,exact
+mobo,ASUS Z390-A,84.2,4,high,exact
+mobo,MSI Z270-A PRO,71.55,4,high,exact
+mobo,ASUS B360M-C,40.38,3,high,exact
+mobo,ASUS B550-PLUS WIFI II,84.92,3,high,exact
+mobo,ASUS B760-A GAMING WIFI,59.99,3,high,exact
+mobo,ASUS X570-E GAMING,211.88,3,high,exact
+mobo,ASUS Z490-P,79.99,3,high,exact
+mobo,ASUS Z690-P WIFI D4,169.95,3,high,exact
+mobo,ASUS Z690-PLUS WIFI D4,210.0,3,high,exact
+mobo,Gigabyte B450 AORUS M,68.41,3,high,exact
+mobo,Gigabyte B550 EAGLE WIFI6,84.99,3,high,exact
+mobo,Gigabyte B650 AORUS ELITE AX,75.0,3,high,exact
+mobo,Gigabyte B850 GAMING WIFI6,99.99,3,high,exact
+mobo,Gigabyte X570 AORUS MASTER,250.02,3,high,exact
+mobo,MSI B550-A PRO,73.62,3,high,exact
+mobo,MSI Z390 GAMING PLUS,86.95,3,high,exact
+mobo,MSI Z790-P WIFI,69.92,3,high,exact
+mobo,ASRock AB350M PRO4,75.0,2,low,exact
+mobo,ASRock B250M PERFORMANCE,94.99,2,low,exact
+mobo,ASRock B450M/AC,69.35,2,low,exact
+mobo,ASRock B550 PHANTOM GAMING 4/AC,70.52,2,low,exact
+mobo,ASRock B550M-C,78.19,2,low,exact
+mobo,ASRock TRX40 TAICHI STRX4,439.99,2,low,exact
+mobo,ASRock X570 TAICHI,335.41,2,low,exact
+mobo,ASRock Z790-C,61.7,2,low,exact
+mobo,ASUS B550-F GAMING WIFI II,99.5,2,low,exact
+mobo,ASUS B650-A GAMING WIFI,88.49,2,low,exact
+mobo,ASUS B650-E WIFI,77.33,2,low,exact
+mobo,ASUS B650-PLUS WIFI,82.45,2,low,exact
+mobo,ASUS B650E-F GAMING WIFI,90.0,2,low,exact
+mobo,ASUS H410M-A,59.72,2,low,exact
+mobo,ASUS Z390-E GAMING,122.49,2,low,exact
+mobo,ASUS Z390-P,75.49,2,low,exact
+mobo,ASUS Z790 HERO,226.75,2,low,exact
+mobo,Gigabyte 990FXA-UD3,70.45,2,low,exact
+mobo,Gigabyte B250M-DS3H,53.47,2,low,exact
+mobo,Gigabyte B650M AORUS ELITE AX,99.29,2,low,exact
+mobo,Gigabyte B660 DS3H AC,78.53,2,low,exact
+mobo,Gigabyte Q170M-MK,50.12,2,low,exact
+mobo,Gigabyte X570 AORUS ELITE WIFI,118.47,2,low,exact
+mobo,Gigabyte Z390 AORUS MASTER,184.75,2,low,exact
+mobo,Gigabyte Z390 AORUS PRO,101.5,2,low,exact
+mobo,Gigabyte Z790 AORUS ELITE AX,80.59,2,low,exact
+mobo,MSI 970A-G46,61.57,2,low,exact
+mobo,MSI B450 GAMING PRO CARBON,137.67,2,low,exact
+mobo,MSI B450 TOMAHAWK,132.29,2,low,exact
+mobo,MSI B450 TOMAHAWK MAX II,71.37,2,low,exact
+mobo,MSI B550 TOMAHAWK,94.95,2,low,exact
+mobo,MSI B760-VC WIFI,52.0,2,low,exact
+mobo,MSI X570 TOMAHAWK WIFI,152.95,2,low,exact
+mobo,MSI X570-A PRO,91.99,2,low,exact
+mobo,MSI Z390-A PRO,63.51,2,low,exact
+mobo,MSI Z490 GAMING CARBON WIFI,120.45,2,low,exact
+mobo,MSI Z490 GAMING EDGE WIFI,117.45,2,low,exact
+mobo,MSI Z490-A PRO,84.95,2,low,exact
+mobo,MSI Z790 TOMAHAWK MAX WIFI,149.95,2,low,exact
+mobo,MSI Z790-A MAX WIFI PROSERIES,86.81,2,low,exact
+mobo,MSI Z97S SLI KRAIT EDITION,83.62,2,low,exact
+mobo,ASRock 990FX KILLER,81.95,1,low,exact
+mobo,ASRock A320M-HDV,54.99,1,low,exact
+mobo,ASRock A320M-HDV R3.0,40.0,1,low,exact
+mobo,ASRock A320M/AC,55.99,1,low,exact
+mobo,ASRock A520M-ITX/AC,168.6,1,low,exact
+mobo,ASRock B250M-HDV,42.99,1,low,exact
+mobo,ASRock B360M PRO4,108.0,1,low,exact
+mobo,ASRock B450 PRO4-F,69.99,1,low,exact
+mobo,ASRock B450 STEEL LEGEND,74.24,1,low,exact
+mobo,ASRock B450M PRO4,76.94,1,low,exact
+mobo,ASRock B550 PHANTOM GAMING-ITX/AX,162.1,1,low,exact
+mobo,ASRock B550M-HDV,66.99,1,low,exact
+mobo,ASRock B560M-C,74.99,1,low,exact
+mobo,ASRock B650M-C,62.99,1,low,exact
+mobo,ASRock B660M PRO RS,72.24,1,low,exact
+mobo,ASRock B660M-C,84.99,1,low,exact
+mobo,ASRock B760M-C,59.89,1,low,exact
+mobo,ASRock B850M-X WIFI R2.0,84.22,1,low,exact
+mobo,ASRock B85M PRO4,88.66,1,low,exact
+mobo,ASRock H110 PRO BTC+,36.43,1,low,exact
+mobo,ASRock H110M-HDV,42.99,1,low,exact
+mobo,ASRock H270M PRO4,62.95,1,low,exact
+mobo,ASRock H310CM-HDV,46.5,1,low,exact
+mobo,ASRock H370M-HDV,55.0,1,low,exact
+mobo,ASRock H81 PRO BTC,100.0,1,low,exact
+mobo,ASRock TRX40 CREATOR,495.0,1,low,exact
+mobo,ASRock X370 KILLER SLI/AC LOGICBOARD,77.85,1,low,exact
+mobo,ASRock X399 TAICHI,408.88,1,low,exact
+mobo,ASRock X470 TAICHI,117.8,1,low,exact
+mobo,ASRock X570 PRO4,183.65,1,low,exact
+mobo,ASRock X870E TAICHI,332.25,1,low,exact
+mobo,ASRock Z270M PRO4,49.99,1,low,exact
+mobo,ASRock Z390 4-IB,74.95,1,low,exact
+mobo,ASRock Z390 PHANTOM GAMING 4S/AC,79.99,1,low,exact
+mobo,ASRock Z490 PG VELOCITA,169.99,1,low,exact
+mobo,ASRock Z590 EXTREME,124.99,1,low,exact
+mobo,ASRock Z590 TAICHI,269.99,1,low,exact
+mobo,ASRock Z590-C/AC,74.99,1,low,exact
+mobo,ASRock Z590M PRO4,173.62,1,low,exact
+mobo,ASRock Z690 TAICHI,171.19,1,low,exact
+mobo,ASRock Z690-C/AC,109.22,1,low,exact
+mobo,ASRock Z790 TAICHI CARRARA,119.99,1,low,exact
+mobo,ASRock Z790-CX,59.7,1,low,exact
+mobo,ASRock Z890 PRO-A WIFI,118.18,1,low,exact
+mobo,ASRock Z97 KILLER,96.99,1,low,exact
+mobo,ASUS A520M-K,64.99,1,low,exact
+mobo,ASUS B150M-C D3,59.99,1,low,exact
+mobo,ASUS B250 MINING EXPERT,59.98,1,low,exact
+mobo,ASUS B250 MINING EXPERT MOTHERBOARD/,52.0,1,low,exact
+mobo,ASUS B250I GAMING,95.68,1,low,exact
+mobo,ASUS B360M PLUS GAMING S,69.99,1,low,exact
+mobo,ASUS B360M-A,59.99,1,low,exact
+mobo,ASUS B450-F,69.99,1,low,exact
+mobo,ASUS B450-F GAMING MTHERBOARD 64GB,73.41,1,low,exact
+mobo,ASUS B450M-A,59.99,1,low,exact
+mobo,ASUS B460-I GAMING,129.99,1,low,exact
+mobo,ASUS B460-PLUS,90.47,1,low,exact
+mobo,ASUS B550 F-GAMING,94.92,1,low,exact
+mobo,ASUS B550-A AC,64.99,1,low,exact
+mobo,ASUS B550-E GAMING,200.0,1,low,exact
+mobo,ASUS B550-F,68.41,1,low,exact
+mobo,ASUS B550-F GAMING WIFI,72.25,1,low,exact
+mobo,ASUS B550-PLUS WIFI,99.95,1,low,exact
+mobo,ASUS B550M PLUS,86.99,1,low,exact
+mobo,ASUS B550M-A AC,81.82,1,low,exact
+mobo,ASUS B550M-PLUS WIFI II,159.99,1,low,exact
+mobo,ASUS B560M-PLUS,133.95,1,low,exact
+mobo,ASUS B650M-PLUS WIFI,99.95,1,low,exact
+mobo,ASUS B660M-A WIFI D4,108.41,1,low,exact
+mobo,ASUS B75M-PLUS,54.96,1,low,exact
+mobo,ASUS B760-I GAMING WIFI,151.82,1,low,exact
+mobo,ASUS B760-PLUS WIFI,84.95,1,low,exact
+mobo,ASUS B85-A R2.0,39.99,1,low,exact
+mobo,ASUS B860M MAX GAMING AX,79.99,1,low,exact
+mobo,ASUS CROSSHAIR VI EXTREME X370,123.99,1,low,exact
+mobo,ASUS CROSSHAIR VI HERO X370,114.99,1,low,exact
+mobo,ASUS CROSSHAIR VIII DARK HERO X570,365.09,1,low,exact
+mobo,ASUS GAMING X570,307.5,1,low,exact
+mobo,ASUS H110M-C,44.54,1,low,exact
+mobo,ASUS H170-PRO,38.99,1,low,exact
+mobo,ASUS H170I-PRO,59.98,1,low,exact
+mobo,ASUS H170M-PLUS,70.69,1,low,exact
+mobo,ASUS H310M-A R2.0,108.57,1,low,exact
+mobo,ASUS H310M-DASH R2.0 8TH GEN,55.0,1,low,exact
+mobo,ASUS H610I-PLUS D4-CSM,90.0,1,low,exact
+mobo,ASUS H610M-A D4,53.99,1,low,exact
+mobo,ASUS H81M-A,35.99,1,low,exact
+mobo,ASUS H81M-PLUS,39.99,1,low,exact
+mobo,ASUS H87-PLUS,26.4,1,low,exact
+mobo,ASUS H97M-E,58.5,1,low,exact
+mobo,ASUS H97M-PLUS,56.83,1,low,exact
+mobo,ASUS LE/CSM R2.0 LGA1155 H61,25.94,1,low,exact
+mobo,ASUS P8Z68 DELUXE Z68,48.75,1,low,exact
+mobo,ASUS P8Z77-V Z77,174.25,1,low,exact
+mobo,ASUS PRIME B250,57.95,1,low,exact
+mobo,ASUS Q370M-C,64.99,1,low,exact
+mobo,ASUS SABERTOOTH Z77,76.2,1,low,exact
+mobo,ASUS VIII DARK HERO X570,212.5,1,low,exact
+mobo,ASUS X299-A II,241.0,1,low,exact
+mobo,ASUS X299-DELUXE II,456.95,1,low,exact
+mobo,ASUS X399-E GAMING,342.48,1,low,exact
+mobo,ASUS X470-I GAMING,165.08,1,low,exact
+mobo,ASUS X570 WIFI 6 PCIE,297.97,1,low,exact
+mobo,ASUS X570-E GAMING WIFI II,219.99,1,low,exact
+mobo,ASUS X570-PLUS,114.99,1,low,exact
+mobo,ASUS X570-PRO,219.99,1,low,exact
+mobo,ASUS X670E GAMING WIFI,319.99,1,low,exact
+mobo,ASUS X670E HERO,175.16,1,low,exact
+mobo,ASUS X670E-E GAMING WIFI,149.99,1,low,exact
+mobo,ASUS X670E-PLUS WIFI,104.7,1,low,exact
+mobo,ASUS X870E DARK HERO,534.98,1,low,exact
+mobo,ASUS X870E X870-F TUF GAMING,646.0,1,low,exact
+mobo,ASUS X870E-E GAMING WIFI,159.99,1,low,exact
+mobo,ASUS Z170 MARK 1,99.99,1,low,exact
+mobo,ASUS Z170 PRO GAMING,109.98,1,low,exact
+mobo,ASUS Z170 S SABERTOOTH,58.99,1,low,exact
+mobo,ASUS Z170-A,62.02,1,low,exact
+mobo,ASUS Z270-A,75.68,1,low,exact
+mobo,ASUS Z270E GAMING,81.99,1,low,exact
+mobo,ASUS Z270I GAMING,78.0,1,low,exact
+mobo,ASUS Z370-A,82.54,1,low,exact
+mobo,ASUS Z390 PRO,260.0,1,low,exact
+mobo,ASUS Z390-H GAMING,117.62,1,low,exact
+mobo,ASUS Z390-PLUS GAMING WIFI,122.62,1,low,exact
+mobo,ASUS Z490-E GAMING,120.0,1,low,exact
+mobo,ASUS Z490-F GAMING,124.22,1,low,exact
+mobo,ASUS Z590-A,129.22,1,low,exact
+mobo,ASUS Z590-E GAMING WIFI,159.99,1,low,exact
+mobo,ASUS Z590-P,114.96,1,low,exact
+mobo,ASUS Z590-PLUS WIFI 6,106.84,1,low,exact
+mobo,ASUS Z690 HERO,165.07,1,low,exact
+mobo,ASUS Z690-E GAMING WIFI,144.08,1,low,exact
+mobo,ASUS Z690-P D4,149.99,1,low,exact
+mobo,ASUS Z790 CREATOR WIFI,277.41,1,low,exact
+mobo,ASUS Z790 DARK HERO,363.95,1,low,exact
+mobo,ASUS Z790 HERO EVA-02,721.8,1,low,exact
+mobo,ASUS Z790 PLUS WIFI,65.09,1,low,exact
+mobo,ASUS Z790-A GAMING WIFI II,189.98,1,low,exact
+mobo,ASUS Z790-A WIFI,64.99,1,low,exact
+mobo,ASUS Z790-E GAMING WIFI,149.99,1,low,exact
+mobo,ASUS Z790-F GAMING WIFI,129.99,1,low,exact
+mobo,ASUS Z790-PLUS WIFI,69.99,1,low,exact
+mobo,ASUS Z790-V AX,64.7,1,low,exact
+mobo,ASUS Z87-EXPERT,95.0,1,low,exact
+mobo,ASUS Z890 EXTREME,499.99,1,low,exact
+mobo,ASUS Z890-E GAMING WIFI 7,159.99,1,low,exact
+mobo,ASUS Z97 MARK 1,130.0,1,low,exact
+mobo,ASUS Z97-E,72.99,1,low,exact
+mobo,ASUS ZENITH II EXTREME TRX40,354.43,1,low,exact
+mobo,EVGA X299 DARK HEDT,619.89,1,low,exact
+mobo,Gigabyte 970A-DS3P,38.62,1,low,exact
+mobo,Gigabyte 990FXA-UD5,247.89,1,low,exact
+mobo,Gigabyte A620I AX,119.85,1,low,exact
+mobo,Gigabyte AX370 GAMING,60.0,1,low,exact
+mobo,Gigabyte AX370-GAMING,49.22,1,low,exact
+mobo,Gigabyte AX370M-DS3H,64.99,1,low,exact
+mobo,Gigabyte B250M-D3H,69.99,1,low,exact
+mobo,Gigabyte B360M-D2V/POWER B360,58.67,1,low,exact
+mobo,Gigabyte B450 AORUS PRO WIFI,89.99,1,low,exact
+mobo,Gigabyte B450M DS3H,67.55,1,low,exact
+mobo,Gigabyte B450M-DS3H,39.99,1,low,exact
+mobo,Gigabyte B460M DS3H AC V2,63.99,1,low,exact
+mobo,Gigabyte B460M DS3H V2,64.99,1,low,exact
+mobo,Gigabyte B550 AORUS ELITE AX,79.99,1,low,exact
+mobo,Gigabyte B550 AORUS PRO V2,119.99,1,low,exact
+mobo,Gigabyte B550 GAMING X V2,87.9,1,low,exact
+mobo,Gigabyte B550 X V2,106.51,1,low,exact
+mobo,Gigabyte B550I AORUS PRO AX,46.25,1,low,exact
+mobo,Gigabyte B550M AORUS ELITE AX,101.98,1,low,exact
+mobo,Gigabyte B550M DS3H,52.95,1,low,exact
+mobo,Gigabyte B550M GAMING X WIFI6,76.0,1,low,exact
+mobo,Gigabyte B560 DS3H AC,79.99,1,low,exact
+mobo,Gigabyte B560M AORUS PRO AX,99.99,1,low,exact
+mobo,Gigabyte B650 AORUS EAGLE AX,73.99,1,low,exact
+mobo,Gigabyte B650 GAMING X AX,74.7,1,low,exact
+mobo,Gigabyte B650 UD AX,79.99,1,low,exact
+mobo,Gigabyte B650M GAMING PLUS WIFI,53.0,1,low,exact
+mobo,Gigabyte B760M C,49.99,1,low,exact
+mobo,Gigabyte B850 AORUS ELITE WIFI7,149.99,1,low,exact
+mobo,Gigabyte B850M C,79.99,1,low,exact
+mobo,Gigabyte G1.SNIPER H6 LGA 1150 H97,71.95,1,low,exact
+mobo,Gigabyte H110M-S2H-GSM,45.15,1,low,exact
+mobo,Gigabyte H310N 2.0,69.99,1,low,exact
+mobo,Gigabyte H370M DS3H,77.99,1,low,exact
+mobo,Gigabyte H97-HD3,164.37,1,low,exact
+mobo,Gigabyte TRX40 AORUS PRO WIFI,550.0,1,low,exact
+mobo,Gigabyte TRX40 AORUS XTREME REV,749.95,1,low,exact
+mobo,Gigabyte X299 AORUS GAMING 7,165.09,1,low,exact
+mobo,Gigabyte X299X AORUS MASTER,630.55,1,low,exact
+mobo,Gigabyte X399 AORUS GAMING 7,388.88,1,low,exact
+mobo,Gigabyte X570 AORUS PRO WIFI,194.1,1,low,exact
+mobo,Gigabyte X570 AORUS ULTRA,245.37,1,low,exact
+mobo,Gigabyte X570 AORUS XTREME,710.0,1,low,exact
+mobo,Gigabyte X570 GAMING X,100.0,1,low,exact
+mobo,Gigabyte X870 AORUS ELITE WIFI,114.99,1,low,exact
+mobo,Gigabyte X870E AORUS PRO X3D,245.63,1,low,exact
+mobo,Gigabyte Z170X-GAMING 5,94.41,1,low,exact
+mobo,Gigabyte Z170X-GAMING 7,84.99,1,low,exact
+mobo,Gigabyte Z270X-GAMING 7,126.11,1,low,exact
+mobo,Gigabyte Z270X-UD3,90.0,1,low,exact
+mobo,Gigabyte Z270X-ULTRA GAMING,56.4,1,low,exact
+mobo,Gigabyte Z370 HD3,66.14,1,low,exact
+mobo,Gigabyte Z370P D3,71.64,1,low,exact
+mobo,Gigabyte Z390 AORUS ULTRA,135.95,1,low,exact
+mobo,Gigabyte Z390 GAMING X,99.96,1,low,exact
+mobo,Gigabyte Z390 I AORUS PRO,146.91,1,low,exact
+mobo,Gigabyte Z490 UD,94.99,1,low,exact
+mobo,Gigabyte Z590 UD,139.99,1,low,exact
+mobo,Gigabyte Z690 AERO G D4,200.0,1,low,exact
+mobo,Gigabyte Z690 AORUS ELITE AX,230.0,1,low,exact
+mobo,Gigabyte Z690 AORUS MASTER,169.7,1,low,exact
+mobo,Gigabyte Z790 EAGLE AX,71.24,1,low,exact
+mobo,Gigabyte Z790M AORUS ELITE AX,169.99,1,low,exact
+mobo,Gigabyte Z97X-UD3H-BK,94.0,1,low,exact
+mobo,MSI B250M BAZOOKA,58.02,1,low,exact
+mobo,MSI B350,56.41,1,low,exact
+mobo,MSI B350 TOMAHAWK,62.5,1,low,exact
+mobo,MSI B360 GAMING PLUS,42.41,1,low,exact
+mobo,MSI B360M BAZOOKA,51.65,1,low,exact
+mobo,MSI B450 GAMING PLUS MAX,69.99,1,low,exact
+mobo,MSI B450 TOMAHAWK MAX,70.73,1,low,exact
+mobo,MSI B450I GAMING PLUS MAX,63.41,1,low,exact
+mobo,MSI B550 GAMING PLUS V1,84.95,1,low,exact
+mobo,MSI B550 TOMAHAWK MAX WIFI,99.92,1,low,exact
+mobo,MSI B550M PRO-VDH WIFI,69.95,1,low,exact
+mobo,MSI B550M PRO-VDH WIFI PROSERIES,89.95,1,low,exact
+mobo,MSI B650 GAMING PLUS WIFI,72.5,1,low,exact
+mobo,MSI B650-P WIFI PROSERIES,40.99,1,low,exact
+mobo,MSI B650-VC WIFI,84.99,1,low,exact
+mobo,MSI B650-VC WIFI III,74.99,1,low,exact
+mobo,MSI B650M-P,65.22,1,low,exact
+mobo,MSI B660 DS3H AC,79.99,1,low,exact
+mobo,MSI B660-P WIFI,99.22,1,low,exact
+mobo,MSI B760 TOMAHAWK WIFI,95.0,1,low,exact
+mobo,MSI B760-P WIFI,104.99,1,low,exact
+mobo,MSI B760-VC WIFI HS BULK,54.99,1,low,exact
+mobo,MSI B760M-VC WIFI BULK,65.0,1,low,exact
+mobo,MSI B760M-WIFI,92.03,1,low,exact
+mobo,MSI B840-VC WIFI,61.95,1,low,exact
+mobo,MSI B850 TOMAWAWK,104.99,1,low,exact
+mobo,MSI B850-S,89.36,1,low,exact
+mobo,MSI B850M MORTAR WIFI,169.95,1,low,exact
+mobo,MSI B850M-VC WIFI6E,78.0,1,low,exact
+mobo,MSI H110M PRO-VD M-ATX,58.86,1,low,exact
+mobo,MSI MEG ACE X570,246.81,1,low,exact
+mobo,MSI X470 GAMING PLUS,78.62,1,low,exact
+mobo,MSI X470 GAMING PRO,114.55,1,low,exact
+mobo,MSI X570 UNIFY,220.0,1,low,exact
+mobo,MSI X570S ACE MAX,350.69,1,low,exact
+mobo,MSI X570S UNIFY-X MAX,259.99,1,low,exact
+mobo,MSI X870 GAMING PLUS WIFI,105.99,1,low,exact
+mobo,MSI X870-P WIFI,132.87,1,low,exact
+mobo,MSI X870E CARBON WIFI GAMING,340.0,1,low,exact
+mobo,MSI Z170-A PRO,69.95,1,low,exact
+mobo,MSI Z170A,52.03,1,low,exact
+mobo,MSI Z270I GAMING PRO CARBON,99.99,1,low,exact
+mobo,MSI Z370 KRAIT GAMING,127.65,1,low,exact
+mobo,MSI Z370 SLI PLUS,48.41,1,low,exact
+mobo,MSI Z370I C2018 CORSAIR GAMING,179.99,1,low,exact
+mobo,MSI Z370M MORTAR,78.41,1,low,exact
+mobo,MSI Z490 GAMING PLUS,106.0,1,low,exact
+mobo,MSI Z490 UNIFY WIFI,142.69,1,low,exact
+mobo,MSI Z570S CARBON WIFI MAX,199.99,1,low,exact
+mobo,MSI Z590 GAMING FORCE,187.49,1,low,exact
+mobo,MSI Z690 CARBON WIFI,164.94,1,low,exact
+mobo,MSI Z690 EDGE WIFI,169.99,1,low,exact
+mobo,MSI Z77A-G41,47.21,1,low,exact
+mobo,MSI Z790 CARBON WIFI,185.08,1,low,exact
+mobo,MSI Z790 TOMAHAWK WIFI,300.0,1,low,exact
+mobo,MSI Z790-P WIFI PROSERIES,69.7,1,low,exact
+mobo,MSI Z790-S WIFI,54.99,1,low,exact
+mobo,MSI Z890 CARBON WIFI,111.0,1,low,exact
+mobo,MSI Z890 GODLIKE,1218.15,1,low,exact
+mobo,MSI Z890 TOMAHAWK WIFI,89.7,1,low,exact
+mobo,MSI Z97 GAMING 3,125.18,1,low,exact
+ram,DDR4 Desktop 16GB (2x8GB) 3200,75.82,34,high,exact
+ram,DDR4 Laptop 16GB (1x16GB) 3200,52.0,30,high,exact
+ram,DDR4 Desktop 32GB (2x16GB) 3200,149.99,19,high,exact
+ram,DDR4 Desktop 8GB (1x8GB) 3200,34.95,19,high,exact
+ram,DDR5 Desktop 32GB (2x16GB) 6000,392.73,19,high,exact
+ram,DDR3 Desktop 16GB (2x8GB) 1600,26.99,17,high,exact
+ram,DDR5 Laptop 16GB (1x16GB) 5600,182.3,17,high,exact
+ram,DDR3 Laptop 16GB (2x8GB) 1600,27.99,15,high,exact
+ram,DDR5 Laptop 32GB (2x16GB) 5600,399.0,15,high,exact
+ram,DDR4 Desktop 32GB (2x16GB) 3600,179.95,14,high,exact
+ram,DDR5 Laptop 8GB (1x8GB) 5600,74.0,14,high,exact
+ram,DDR3 Desktop 8GB (1x8GB) 1600,14.99,13,high,exact
+ram,DDR4 Desktop 16GB (1x16GB) 2666,55.0,13,high,exact
+ram,DDR4 Desktop 16GB (2x8GB) 2666,52.5,13,high,exact
+ram,DDR4 Desktop 8GB (1x8GB) 2666,31.49,13,high,exact
+ram,DDR4 Laptop 8GB (1x8GB) 3200,32.8,13,high,exact
+ram,DDR3 Laptop 8GB (1x8GB) 1600,16.3,12,high,exact
+ram,DDR4 Desktop 16GB (1x16GB) 3200,69.51,12,high,exact
+ram,DDR4 Desktop 16GB (2x8GB) 3600,84.99,11,high,exact
+ram,DDR5 Laptop 16GB (1x16GB) 4800,166.21,11,high,exact
+ram,DDR4 Laptop 16GB (1x16GB) 2666,49.0,10,high,exact
+ram,DDR4 Laptop 16GB (2x8GB),55.67,10,high,exact
+ram,DDR4 Laptop 32GB (2x16GB) 3200,109.99,10,high,exact
+ram,DDR4 Desktop 8GB (1x8GB) 2400,24.99,9,high,exact
+ram,DDR4 Desktop 16GB (2x8GB) 2400,59.99,8,high,exact
+ram,DDR4 Laptop 16GB (1x16GB) 2400,50.42,8,high,exact
+ram,DDR4 Laptop 16GB (2x8GB) 2400,49.01,8,high,exact
+ram,DDR4 Laptop 16GB (2x8GB) 3200,52.72,8,high,exact
+ram,DDR5 Desktop 16GB (1x16GB) 6000,224.98,8,high,exact
+ram,DDR4 Desktop 16GB (2x8GB) 3000,72.49,7,high,exact
+ram,DDR4 Desktop 64GB (2x32GB) 3200,374.5,7,high,exact
+ram,DDR4 Laptop 32GB (1x32GB) 3200,130.0,7,high,exact
+ram,DDR5 Desktop 64GB (2x32GB) 6000,732.54,7,high,exact
+ram,DDR5 Laptop 32GB (1x32GB) 5600,374.49,7,high,exact
+ram,DDR3 Desktop 32GB (4x8GB) 1600,55.63,6,high,exact
+ram,DDR3 Desktop 8GB (2x4GB) 1600,14.23,6,high,exact
+ram,DDR4 Desktop 8GB (2x4GB) 2400,33.32,6,high,exact
+ram,DDR4 Laptop 8GB (1x8GB) 2666,27.49,6,high,exact
+ram,DDR5 Desktop 32GB (1x32GB) 4800,349.99,6,high,exact
+ram,DDR4 Desktop 16GB (2x8GB) 2133,55.98,5,high,exact
+ram,DDR4 Desktop 32GB (4x8GB) 3200,149.98,5,high,exact
+ram,DDR4 Laptop 16GB (1x16GB) 2133,44.0,5,high,exact
+ram,DDR4 Laptop 8GB (1x8GB) 2400,26.2,5,high,exact
+ram,DDR5 Desktop 16GB (2x8GB) 6000,212.49,5,high,exact
+ram,DDR5 Desktop 32GB (2x16GB) 5200,362.49,5,high,exact
+ram,DDR5 Laptop 32GB (2x16GB) 4800,339.0,5,high,exact
+ram,DDR5 Laptop 8GB (1x8GB) 4800,82.0,5,high,exact
+ram,DDR3 Desktop 16GB (4x4GB) 1600,15.66,4,high,exact
+ram,DDR3 Laptop 4GB (1x4GB) 1600,7.47,4,high,exact
+ram,DDR3 Server 16GB (1x16GB) 1600,21.64,4,high,exact
+ram,DDR4 Desktop 16GB (1x16GB) 2400,59.0,4,high,exact
+ram,DDR4 Desktop 32GB (2x16GB) 2666,119.99,4,high,exact
+ram,DDR4 Laptop 16GB (2x8GB) 2666,53.0,4,high,exact
+ram,DDR4 Laptop 32GB (1x32GB),133.81,4,high,exact
+ram,DDR4 Laptop 32GB (1x32GB) 2666,108.9,4,high,exact
+ram,DDR4 Laptop 32GB (2x16GB) 2666,119.99,4,high,exact
+ram,DDR4 Laptop 64GB (2x32GB) 3200,282.5,4,high,exact
+ram,DDR4 Server 16GB (1x16GB) 2133,52.49,4,high,exact
+ram,DDR5 Laptop 16GB (2x8GB) 5600,173.51,4,high,exact
+ram,DDR5 Laptop 32GB (1x32GB) 4800,319.6,4,high,exact
+ram,DDR5 Laptop 64GB (2x32GB) 5600,738.2,4,high,exact
+ram,DDR3 Desktop 4GB (1x4GB) 1600,9.4,3,high,exact
+ram,DDR3 Laptop 8GB (2x4GB) 1333,20.36,3,high,exact
+ram,DDR3 Laptop 8GB (2x4GB) 1600,11.68,3,high,exact
+ram,DDR3 Server 128GB (4x32GB) 1866,168.87,3,high,exact
+ram,DDR3 Server 16GB (1x16GB) 1866,14.56,3,high,exact
+ram,DDR3 Server 8GB (1x8GB) 1866,15.0,3,high,exact
+ram,DDR4 Desktop 128GB (4x32GB) 3200,506.36,3,high,exact
+ram,DDR4 Desktop 16GB (1x16GB) 3600,89.99,3,high,exact
+ram,DDR4 Desktop 32GB (2x16GB) 2400,106.35,3,high,exact
+ram,DDR4 Desktop 4GB (1x4GB) 2666,17.3,3,high,exact
+ram,DDR4 Desktop 8GB (2x4GB) 3000,36.99,3,high,exact
+ram,DDR4 Laptop 16GB (2x8GB) 2133,44.99,3,high,exact
+ram,DDR4 Laptop 8GB (1x8GB) 2133,32.95,3,high,exact
+ram,DDR4 Server 16GB (1x16GB) 2400,75.0,3,high,exact
+ram,DDR4 Server 32GB (1x32GB) 2400,185.0,3,high,exact
+ram,DDR4 Server 32GB (1x32GB) 2666,130.65,3,high,exact
+ram,DDR4 Server 32GB (2x16GB) 3200,129.15,3,high,exact
+ram,DDR5 Desktop 16GB (1x16GB) 4800,163.99,3,high,exact
+ram,DDR5 Desktop 16GB (1x16GB) 5600,250.0,3,high,exact
+ram,DDR5 Desktop 16GB (2x8GB) 5200,196.67,3,high,exact
+ram,DDR5 Desktop 32GB (1x32GB) 5600,349.99,3,high,exact
+ram,DDR5 Desktop 32GB (2x16GB) 5600,374.99,3,high,exact
+ram,DDR5 Desktop 48GB (1x48GB) 6400,650.0,3,high,exact
+ram,DDR5 Desktop 64GB (1x64GB) 4800,699.99,3,high,exact
+ram,DDR5 Desktop 64GB (2x32GB) 5600,750.0,3,high,exact
+ram,DDR5 Desktop 64GB (2x32GB) 6400,759.99,3,high,exact
+ram,DDR5 Desktop 8GB (1x8GB) 4800,79.99,3,high,exact
+ram,DDR5 Desktop 96GB (2x48GB) 6400,1399.95,3,high,exact
+ram,DDR5 Laptop 16GB (1x16GB),175.64,3,high,exact
+ram,DDR5 Server 16GB (1x16GB) 5600,399.99,3,high,exact
+ram,DDR3 Desktop 16GB (2x8GB),25.77,2,low,exact
+ram,DDR3 Desktop 16GB (2x8GB) 1333,74.19,2,low,exact
+ram,DDR3 Desktop 16GB (2x8GB) 1866,32.5,2,low,exact
+ram,DDR3 Desktop 32GB (1x32GB) 1866,88.39,2,low,exact
+ram,DDR3 Desktop 32GB (4x8GB) 1333,43.08,2,low,exact
+ram,DDR3 Desktop 4GB (2x2GB) 1333,9.88,2,low,exact
+ram,DDR3 Laptop 16GB (2x8GB) 1333,30.14,2,low,exact
+ram,DDR3 Laptop 8GB (2x4GB) 1866,23.75,2,low,exact
+ram,DDR3 Server 24GB (3x8GB) 1333,20.8,2,low,exact
+ram,DDR3 Server 32GB (4x8GB) 1600,35.4,2,low,exact
+ram,DDR3 Server 64GB (4x16GB) 1600,69.65,2,low,exact
+ram,DDR4 Desktop 16GB (1x16GB),55.84,2,low,exact
+ram,DDR4 Desktop 16GB (1x16GB) 2133,54.98,2,low,exact
+ram,DDR4 Desktop 16GB (2x8GB),63.14,2,low,exact
+ram,DDR4 Desktop 32GB (2x16GB) 3000,127.49,2,low,exact
+ram,DDR4 Desktop 32GB (2x16GB) 4000,277.06,2,low,exact
+ram,DDR4 Desktop 32GB (4x8GB) 2666,93.98,2,low,exact
+ram,DDR4 Laptop 16GB (1x16GB),53.67,2,low,exact
+ram,DDR4 Laptop 32GB (2x16GB),114.5,2,low,exact
+ram,DDR4 Laptop 4GB (1x4GB) 2666,20.14,2,low,exact
+ram,DDR4 Laptop 64GB (4x16GB) 3200,193.16,2,low,exact
+ram,DDR4 Laptop 8GB (2x4GB) 2400,22.16,2,low,exact
+ram,DDR4 Server 128GB (4x32GB),499.99,2,low,exact
+ram,DDR4 Server 16GB (1x16GB) 3200,157.67,2,low,exact
+ram,DDR4 Server 32GB (1x32GB) 2133,95.62,2,low,exact
+ram,DDR4 Server 32GB (2x16GB),140.55,2,low,exact
+ram,DDR4 Server 64GB (2x32GB) 2400,262.5,2,low,exact
+ram,DDR4 Server 64GB (4x16GB) 2666,265.0,2,low,exact
+ram,DDR4 Server 8GB (1x8GB) 2133,27.41,2,low,exact
+ram,DDR5 Desktop 16GB (1x16GB) 5200,153.97,2,low,exact
+ram,DDR5 Desktop 16GB (2x8GB) 5600,200.79,2,low,exact
+ram,DDR5 Desktop 32GB (1x32GB) 6000,440.47,2,low,exact
+ram,DDR5 Desktop 32GB (2x16GB) 4800,372.0,2,low,exact
+ram,DDR5 Desktop 64GB (2x32GB) 4800,452.5,2,low,exact
+ram,DDR5 Desktop 8GB (1x8GB) 5600,99.99,2,low,exact
+ram,DDR5 Laptop 16GB (2x8GB) 4800,148.83,2,low,exact
+ram,DDR3 Desktop 16GB (1x16GB),19.85,1,low,exact
+ram,DDR3 Desktop 16GB (1x16GB) 1600,24.95,1,low,exact
+ram,DDR3 Desktop 16GB (1x16GB) 1866,35.99,1,low,exact
+ram,DDR3 Desktop 16GB (2x8GB) 2400,49.98,1,low,exact
+ram,DDR3 Desktop 16GB (4x4GB),22.73,1,low,exact
+ram,DDR3 Desktop 16GB (4x4GB) 1866,19.0,1,low,exact
+ram,DDR3 Desktop 24GB (3x8GB) 2133,78.02,1,low,exact
+ram,DDR3 Desktop 2GB (1x2GB) 1333,29.64,1,low,exact
+ram,DDR3 Desktop 2GB (2x1GB) 1333,9.98,1,low,exact
+ram,DDR3 Desktop 32GB (1x32GB),44.99,1,low,exact
+ram,DDR3 Desktop 32GB (8x4GB) 2133,86.98,1,low,exact
+ram,DDR3 Desktop 40GB (5x8GB) 1600,34.99,1,low,exact
+ram,DDR3 Desktop 4GB (2x2GB) 1600,20.12,1,low,exact
+ram,DDR3 Desktop 64GB (8x8GB) 2400,98.43,1,low,exact
+ram,DDR3 Desktop 8GB (1x8GB),25.0,1,low,exact
+ram,DDR3 Desktop 8GB (1x8GB) 2133,27.99,1,low,exact
+ram,DDR3 Laptop 16GB (1x16GB) 1600,41.35,1,low,exact
+ram,DDR3 Laptop 24GB (3x8GB) 1600,29.99,1,low,exact
+ram,DDR3 Laptop 32GB (4x8GB) 1600,35.0,1,low,exact
+ram,DDR3 Laptop 32GB (8x4GB) 1333,15.65,1,low,exact
+ram,DDR3 Laptop 40GB (5x8GB) 1600,39.95,1,low,exact
+ram,DDR3 Laptop 4GB (1x4GB) 1333,12.67,1,low,exact
+ram,DDR3 Laptop 8GB (1x8GB),29.52,1,low,exact
+ram,DDR3 Laptop 8GB (1x8GB) 1333,26.3,1,low,exact
+ram,DDR3 Laptop 8GB (1x8GB) 1866,26.3,1,low,exact
+ram,DDR3 Server 128GB (8x16GB) 1866,140.0,1,low,exact
+ram,DDR3 Server 16GB (2x8GB) 1333,15.59,1,low,exact
+ram,DDR3 Server 16GB (2x8GB) 1866,40.0,1,low,exact
+ram,DDR3 Server 32GB (1x32GB) 1600,51.49,1,low,exact
+ram,DDR3 Server 32GB (2x16GB) 1600,97.83,1,low,exact
+ram,DDR3 Server 32GB (2x16GB) 1866,31.95,1,low,exact
+ram,DDR3 Server 4GB (1x4GB) 1600,80.0,1,low,exact
+ram,DDR3 Server 8GB (1x8GB) 1333,14.0,1,low,exact
+ram,DDR3 Server 8GB (1x8GB) 1600,14.99,1,low,exact
+ram,DDR4 Desktop 16GB (1x16GB) 3000,130.73,1,low,exact
+ram,DDR4 Desktop 16GB (4x4GB) 2400,41.5,1,low,exact
+ram,DDR4 Desktop 32GB (1x32GB) 2666,149.99,1,low,exact
+ram,DDR4 Desktop 32GB (2x16GB) 2933,159.95,1,low,exact
+ram,DDR4 Desktop 32GB (4x8GB) 2133,159.99,1,low,exact
+ram,DDR4 Desktop 32GB (4x8GB) 3000,144.99,1,low,exact
+ram,DDR4 Desktop 32GB (4x8GB) 3600,180.0,1,low,exact
+ram,DDR4 Desktop 4GB (1x4GB) 2133,12.99,1,low,exact
+ram,DDR4 Desktop 4GB (1x4GB) 2400,15.65,1,low,exact
+ram,DDR4 Desktop 4GB (1x4GB) 3200,16.98,1,low,exact
+ram,DDR4 Desktop 4GB (4x1GB) 2133,14.99,1,low,exact
+ram,DDR4 Desktop 64GB (1x64GB),244.5,1,low,exact
+ram,DDR4 Desktop 64GB (1x64GB) 2666,289.99,1,low,exact
+ram,DDR4 Desktop 64GB (1x64GB) 3200,301.28,1,low,exact
+ram,DDR4 Desktop 64GB (2x32GB) 3600,376.85,1,low,exact
+ram,DDR4 Desktop 64GB (4x16GB) 2400,196.47,1,low,exact
+ram,DDR4 Desktop 64GB (4x16GB) 2666,185.85,1,low,exact
+ram,DDR4 Desktop 64GB (4x16GB) 3200,299.99,1,low,exact
+ram,DDR4 Desktop 64GB (4x16GB) 3600,349.99,1,low,exact
+ram,DDR4 Desktop 64GB (8x8GB) 2400,180.0,1,low,exact
+ram,DDR4 Desktop 8GB (1x8GB),41.67,1,low,exact
+ram,DDR4 Desktop 8GB (1x8GB) 2133,29.99,1,low,exact
+ram,DDR4 Desktop 8GB (1x8GB) 3000,34.99,1,low,exact
+ram,DDR4 Desktop 8GB (1x8GB) 3600,39.99,1,low,exact
+ram,DDR4 Desktop 8GB (2x4GB),27.64,1,low,exact
+ram,DDR4 Desktop 8GB (2x4GB) 2666,24.06,1,low,exact
+ram,DDR4 Desktop 8GB (2x4GB) 3200,27.99,1,low,exact
+ram,DDR4 Laptop 128GB (4x32GB) 2666,425.0,1,low,exact
+ram,DDR4 Laptop 16GB (4x4GB) 2666,75.5,1,low,exact
+ram,DDR4 Laptop 32GB (2x16GB) 2400,108.0,1,low,exact
+ram,DDR4 Laptop 40GB (5x8GB),110.65,1,low,exact
+ram,DDR4 Laptop 4GB (1x4GB) 2133,20.36,1,low,exact
+ram,DDR4 Laptop 4GB (1x4GB) 3200,15.65,1,low,exact
+ram,DDR4 Laptop 64GB (2x32GB),305.96,1,low,exact
+ram,DDR4 Laptop 64GB (2x32GB) 2933,250.59,1,low,exact
+ram,DDR4 Laptop 64GB (4x16GB) 2400,200.72,1,low,exact
+ram,DDR4 Laptop 8GB (1x8GB),314.95,1,low,exact
+ram,DDR4 Laptop 8GB (2x4GB),23.99,1,low,exact
+ram,DDR4 Laptop 8GB (2x4GB) 2666,20.65,1,low,exact
+ram,DDR4 Server 128GB (4x32GB) 2666,516.76,1,low,exact
+ram,DDR4 Server 128GB (8x16GB) 2400,539.99,1,low,exact
+ram,DDR4 Server 16GB (1x16GB) 2666,50.0,1,low,exact
+ram,DDR4 Server 16GB (1x16GB) 2933,1800.0,1,low,exact
+ram,DDR4 Server 192GB (6x32GB) 2400,556.71,1,low,exact
+ram,DDR4 Server 256GB (4x64GB) 3200,1839.89,1,low,exact
+ram,DDR4 Server 32GB (1x32GB) 2933,1086.0,1,low,exact
+ram,DDR4 Server 32GB (2x16GB) 2133,110.0,1,low,exact
+ram,DDR4 Server 32GB (2x16GB) 2666,110.0,1,low,exact
+ram,DDR4 Server 32GB (4x8GB) 2133,109.0,1,low,exact
+ram,DDR4 Server 32GB (4x8GB) 2400,157.42,1,low,exact
+ram,DDR4 Server 48GB (6x8GB) 2400,145.99,1,low,exact
+ram,DDR4 Server 56GB (7x8GB) 2666,141.8,1,low,exact
+ram,DDR4 Server 64GB (1x64GB) 2400,400.0,1,low,exact
+ram,DDR4 Server 64GB (1x64GB) 2666,246.67,1,low,exact
+ram,DDR4 Server 64GB (1x64GB) 2933,280.27,1,low,exact
+ram,DDR4 Server 64GB (1x64GB) 3200,299.0,1,low,exact
+ram,DDR4 Server 64GB (4x16GB),266.79,1,low,exact
+ram,DDR4 Server 64GB (8x8GB),259.99,1,low,exact
+ram,DDR4 Server 64GB (8x8GB) 2400,180.0,1,low,exact
+ram,DDR5 Desktop 128GB (4x32GB),1699.99,1,low,exact
+ram,DDR5 Desktop 16GB (1x16GB) 6400,219.99,1,low,exact
+ram,DDR5 Desktop 16GB (2x8GB) 4800,179.99,1,low,exact
+ram,DDR5 Desktop 32GB (2x16GB),211.72,1,low,exact
+ram,DDR5 Desktop 32GB (2x16GB) 6400,399.99,1,low,exact
+ram,DDR5 Desktop 48GB (2x24GB) 7200,699.0,1,low,exact
+ram,DDR5 Desktop 64GB (1x64GB) 6000,959.99,1,low,exact
+ram,DDR5 Desktop 64GB (2x32GB),806.46,1,low,exact
+ram,DDR5 Desktop 64GB (2x32GB) 5200,683.99,1,low,exact
+ram,DDR5 Desktop 64GB (4x16GB) 8000,861.1,1,low,exact
+ram,DDR5 Desktop 96GB (2x48GB) 5600,1450.0,1,low,exact
+ram,DDR5 Laptop 16GB (2x8GB),195.0,1,low,exact
+ram,DDR5 Laptop 32GB (1x32GB),113.26,1,low,exact
+ram,DDR5 Laptop 32GB (1x32GB) 6400,424.99,1,low,exact
+ram,DDR5 Laptop 64GB (2x32GB) 4800,679.99,1,low,exact
+ram,DDR5 Laptop 96GB (6x16GB) 5600,1049.0,1,low,exact
+ram,DDR5 Server 32GB (1x32GB) 5600,717.07,1,low,exact
+ram,DDR5 Server 32GB (1x32GB) 6400,965.17,1,low,exact
+ram,DDR5 Server 64GB (1x64GB),2099.99,1,low,exact
+ram,DDR5 Server 64GB (1x64GB) 4800,2224.61,1,low,exact
+ram,DDR5 Server 64GB (2x32GB) 6000,475.97,1,low,exact
+ram,DDR5 Server 8GB (1x8GB),86.62,1,low,exact
+gpu,Tesla V100,409.0,47,high,exact
+gpu,RTX 3060 12GB,369.97,31,high,exact
+gpu,Tesla P100,209.0,25,high,exact
+gpu,RTX 3080,479.12,24,high,exact
+gpu,RTX 3070,302.91,23,high,exact
+gpu,RTX 3090,1736.44,17,high,exact
+gpu,RX 580 8GB,70.09,17,high,exact
+gpu,GTX 1070,81.94,16,high,exact
+gpu,GTX 1080 Ti,172.5,16,high,exact
+gpu,RTX A4000,891.53,16,high,exact
+gpu,Tesla P40,275.0,16,high,exact
+gpu,Tesla T4,437.0,16,high,exact
+gpu,GTX 1060 6GB,54.0,15,high,exact
+gpu,RTX 4090,3099.97,15,high,exact
+gpu,T1000,165.0,15,high,exact
+gpu,RTX 2080 Ti,362.4,14,high,exact
+gpu,RTX A2000,506.92,14,high,exact
+gpu,RX 5700 XT,168.69,12,high,exact
+gpu,GTX 1660 SUPER,119.99,11,high,exact
+gpu,RTX 4070,651.71,11,high,exact
+gpu,RTX 5060,444.99,10,high,exact
+gpu,GTX 1080,123.53,9,high,exact
+gpu,RTX 3060 Ti,271.7,9,high,exact
+gpu,RX 7900 XTX,1195.0,9,high,exact
+gpu,Tesla M60,58.99,9,high,exact
+gpu,GTX 1050 Ti,65.0,8,high,exact
+gpu,GTX 960,40.02,8,high,exact
+gpu,RTX 2070 SUPER,220.65,8,high,exact
+gpu,GT 1030 2GB,48.76,7,high,exact
+gpu,Quadro 4000,189.0,7,high,exact
+gpu,Quadro P620,29.03,7,high,exact
+gpu,RTX 4060,359.98,7,high,exact
+gpu,RX 6600,220.73,7,high,exact
+gpu,RX 6600 XT,249.97,7,high,exact
+gpu,RX 6800 XT,492.5,7,high,exact
+gpu,Quadro P1000,59.44,6,high,exact
+gpu,RTX 2070,184.99,6,high,exact
+gpu,RTX 4070 SUPER,724.97,6,high,exact
+gpu,RTX 5070 Ti,1299.97,6,high,exact
+gpu,RTX 5090,2009.92,6,high,exact
+gpu,Tesla K80,59.99,6,high,exact
+gpu,Tesla M40,131.62,6,high,exact
+gpu,GTX 750 Ti,35.55,5,high,exact
+gpu,Quadro 6000,999.99,5,high,exact
+gpu,Quadro P2200,85.0,5,high,exact
+gpu,RTX 2060 6GB,149.97,5,high,exact
+gpu,RX 570 4GB,44.99,5,high,exact
+gpu,RX 6700 XT,346.12,5,high,exact
+gpu,Tesla P4,109.99,5,high,exact
+gpu,GT 710,28.23,4,high,exact
+gpu,GTX 1060 3GB,57.02,4,high,exact
+gpu,GTX 1660 Ti,119.5,4,high,exact
+gpu,Quadro 8000,2212.11,4,high,exact
+gpu,Quadro K1200,31.11,4,high,exact
+gpu,RTX 2060 SUPER,195.75,4,high,exact
+gpu,RTX 3050 6GB,207.79,4,high,exact
+gpu,RTX 3050 8GB,218.99,4,high,exact
+gpu,RTX 3070 Ti,365.25,4,high,exact
+gpu,RTX 5060 Ti 16GB,698.99,4,high,exact
+gpu,RX 480 8GB,71.44,4,high,exact
+gpu,RX 5600 XT,133.11,4,high,exact
+gpu,RX 6400,167.34,4,high,exact
+gpu,RX 6650 XT,268.4,4,high,exact
+gpu,RX 6800,465.74,4,high,exact
+gpu,RX 9060 XT,609.73,4,high,exact
+gpu,Tesla M10,105.47,4,high,exact
+gpu,Arc B580,520.0,3,high,exact
+gpu,GTX 1650,108.1,3,high,exact
+gpu,GTX 980,69.99,3,high,exact
+gpu,Quadro K620,18.99,3,high,exact
+gpu,Quadro P2000,79.98,3,high,exact
+gpu,Quadro P5000,264.52,3,high,exact
+gpu,Quadro T400,85.0,3,high,exact
+gpu,RTX 2080 SUPER,271.94,3,high,exact
+gpu,RTX 3080 Ti,600.49,3,high,exact
+gpu,RTX 4060 Ti 16GB,690.0,3,high,exact
+gpu,RTX 4060 Ti 8GB,399.99,3,high,exact
+gpu,RTX 4070 Ti,765.73,3,high,exact
+gpu,RTX 4070 Ti SUPER,988.48,3,high,exact
+gpu,RTX 5070,809.73,3,high,exact
+gpu,RTX 5080,1830.2,3,high,exact
+gpu,RTX A5000,2199.0,3,high,exact
+gpu,RX 550,57.74,3,high,exact
+gpu,RX 570 8GB,69.99,3,high,exact
+gpu,RX 5700,179.99,3,high,exact
+gpu,RX 6950 XT,597.5,3,high,exact
+gpu,RX 7600,309.97,3,high,exact
+gpu,RX 7800 XT,591.95,3,high,exact
+gpu,RX 9070 XT,929.97,3,high,exact
+gpu,Arc A770 16GB,360.0,2,low,exact
+gpu,GT 730,21.98,2,low,exact
+gpu,GTX 1050 2GB,50.27,2,low,exact
+gpu,GTX 1070 Ti,180.03,2,low,exact
+gpu,GTX 1660,113.28,2,low,exact
+gpu,GTX 670,30.85,2,low,exact
+gpu,GTX 760,40.34,2,low,exact
+gpu,GTX 980 Ti,94.08,2,low,exact
+gpu,Quadro 3000,215.91,2,low,exact
+gpu,Quadro 5000,449.5,2,low,exact
+gpu,Quadro P600,29.99,2,low,exact
+gpu,Quadro P6000,368.41,2,low,exact
+gpu,RTX 2060 (VRAM unknown),237.29,2,low,exact
+gpu,RTX 2060 12GB,363.83,2,low,exact
+gpu,RTX 3090 Ti,1749.38,2,low,exact
+gpu,RTX 4000,1299.98,2,low,exact
+gpu,RTX 4080 SUPER,1282.22,2,low,exact
+gpu,RTX 6000,6731.31,2,low,exact
+gpu,RTX A1000,393.04,2,low,exact
+gpu,RTX A4500,1215.22,2,low,exact
+gpu,RX 470 8GB,48.75,2,low,exact
+gpu,RX 5500 XT 8GB,128.03,2,low,exact
+gpu,RX 580 4GB,58.2,2,low,exact
+gpu,RX 640,54.27,2,low,exact
+gpu,RX 6500,154.99,2,low,exact
+gpu,RX 6500 XT 4GB,88.77,2,low,exact
+gpu,RX 6900 XT,458.37,2,low,exact
+gpu,Tesla A16,2511.82,2,low,exact
+gpu,Tesla T10,359.46,2,low,exact
+gpu,Tesla V100S,1015.99,2,low,exact
+gpu,Arc A310,262.42,1,low,exact
+gpu,GT 1030 4GB,69.99,1,low,exact
+gpu,GT 120,12.36,1,low,exact
+gpu,GT 218,18.24,1,low,exact
+gpu,GT 520,13.5,1,low,exact
+gpu,GTX 1650 SUPER,90.99,1,low,exact
+gpu,GTX 280,41.94,1,low,exact
+gpu,GTX 650 Ti,27.62,1,low,exact
+gpu,GTX 660,41.26,1,low,exact
+gpu,GTX 680,65.0,1,low,exact
+gpu,GTX 770,30.0,1,low,exact
+gpu,Quadro 2000,36.77,1,low,exact
+gpu,Quadro K2200,28.99,1,low,exact
+gpu,Quadro K4000,18.14,1,low,exact
+gpu,Quadro K420,15.95,1,low,exact
+gpu,Quadro K4200,68.36,1,low,exact
+gpu,Quadro K5200,55.01,1,low,exact
+gpu,Quadro P400,32.76,1,low,exact
+gpu,Quadro P4000,184.98,1,low,exact
+gpu,Quadro T2000,208.48,1,low,exact
+gpu,RTX 3060 8GB,269.99,1,low,exact
+gpu,RTX 4080,1111.95,1,low,exact
+gpu,RTX 5060 Ti 8GB,459.98,1,low,exact
+gpu,RTX A6000,4225.0,1,low,exact
+gpu,RX 460,41.99,1,low,exact
+gpu,RX 470 4GB,108.48,1,low,exact
+gpu,RX 480 (VRAM unknown),82.55,1,low,exact
+gpu,RX 480 4GB,50.0,1,low,exact
+gpu,RX 560,79.99,1,low,exact
+gpu,RX 590,98.54,1,low,exact
+gpu,RX 7900 XT,850.0,1,low,exact
+gpu,RX 9070,815.78,1,low,exact
+gpu,RX Vega 56,235.3,1,low,exact
+gpu,RX Vega 64,164.94,1,low,exact
+gpu,Tesla A100,6499.99,1,low,exact
+gpu,Tesla L40,6799.0,1,low,exact
+gpu,Tesla M4,21.05,1,low,exact
+mobo,X570,199.99,33,high,fallback
+mobo,B550,82.81,32,high,fallback
+mobo,Z790,87.41,30,high,fallback
+mobo,Z390,99.0,25,high,fallback
+mobo,B450,74.59,20,high,fallback
+mobo,B650,75.0,16,high,fallback
+mobo,Z690,169.97,16,high,fallback
+mobo,Z490,106.0,15,high,fallback
+mobo,X870E,159.99,11,high,fallback
+mobo,B550M,79.99,11,high,fallback
+mobo,B760,72.47,10,high,fallback
+mobo,Z590,129.22,9,high,fallback
+mobo,B360M,59.33,8,high,fallback
+mobo,B250M,58.02,7,high,fallback
+mobo,Z890,139.09,6,high,fallback
+mobo,B450M,67.77,6,high,fallback
+mobo,B850,102.49,6,high,fallback
+mobo,B650M,80.6,6,high,fallback
+mobo,TRX40,497.5,6,high,fallback
+mobo,X370,77.85,5,high,fallback
+mobo,Z270,73.1,5,high,fallback
+mobo,Z170,69.95,5,high,fallback
+mobo,H110M,44.84,4,high,fallback
+mobo,B760M,62.45,4,high,fallback
+mobo,X299,348.98,4,high,fallback
+mobo,X670E,162.57,4,high,fallback
+mobo,X470,116.17,4,high,fallback
+mobo,Z97,111.09,4,high,fallback
+mobo,B660,81.03,4,high,fallback
+mobo,Z370,74.34,4,high,fallback
+mobo,B850M,82.1,4,high,fallback
+mobo,970A,51.95,3,high,fallback
+mobo,A320M,54.99,3,high,fallback
+mobo,Z270X,90.0,3,high,fallback
+mobo,B660M,84.99,3,high,fallback
+mobo,B250,57.95,3,high,fallback
+mobo,X399,388.88,3,high,fallback
+mobo,X870,114.99,3,high,fallback
+mobo,990FXA,84.92,3,high,fallback
+mobo,B560M,99.99,3,high,fallback
+mobo,H97,118.16,2,low,fallback
+mobo,B350,59.45,2,low,fallback
+mobo,B350M,75.0,2,low,fallback
+mobo,Z97S,83.62,2,low,fallback
+mobo,Q170M,50.12,2,low,fallback
+mobo,Z77,125.22,2,low,fallback
+mobo,B460,110.23,2,low,fallback
+mobo,H310M,81.78,2,low,fallback
+mobo,H370M,66.5,2,low,fallback
+mobo,B460M,64.49,2,low,fallback
+mobo,H410M,59.72,2,low,fallback
+mobo,Z270I,89.0,2,low,fallback
+mobo,A520M,116.79,2,low,fallback
+mobo,H97M,57.66,2,low,fallback
+mobo,H81M,37.99,2,low,fallback
+mobo,Z170X,89.7,2,low,fallback
+mobo,B650E,90.0,2,low,fallback
+mobo,X570S,305.34,2,low,fallback
+mobo,B360,42.41,1,low,fallback
+mobo,B85M,88.66,1,low,fallback
+mobo,H310CM,46.5,1,low,fallback
+mobo,Z370M,78.41,1,low,fallback
+mobo,Z370P,71.64,1,low,fallback
+mobo,Z570S,199.99,1,low,fallback
+mobo,B250I,95.68,1,low,fallback
+mobo,Z270M,49.99,1,low,fallback
+mobo,B75M,54.96,1,low,fallback
+mobo,H170M,70.69,1,low,fallback
+mobo,A620I,119.85,1,low,fallback
+mobo,Z370I,179.99,1,low,fallback
+mobo,H610M,53.99,1,low,fallback
+mobo,Z97X,94.0,1,low,fallback
+mobo,H110,36.43,1,low,fallback
+mobo,X370M,64.99,1,low,fallback
+mobo,H87,26.4,1,low,fallback
+mobo,Z77A,47.21,1,low,fallback
+mobo,H310N,69.99,1,low,fallback
+mobo,H170,38.99,1,low,fallback
+mobo,H610I,90.0,1,low,fallback
+mobo,Z590M,173.62,1,low,fallback
+mobo,H61,25.94,1,low,fallback
+mobo,H270M,62.95,1,low,fallback
+mobo,Q370M,64.99,1,low,fallback
+mobo,B85,39.99,1,low,fallback
+mobo,Z68,48.75,1,low,fallback
+mobo,B560,79.99,1,low,fallback
+mobo,Z270E,81.99,1,low,fallback
+mobo,Z790M,169.99,1,low,fallback
+mobo,B840,61.95,1,low,fallback
+mobo,B450I,63.41,1,low,fallback
+mobo,H81,100.0,1,low,fallback
+mobo,990FX,81.95,1,low,fallback
+mobo,Z170A,52.03,1,low,fallback
+mobo,H170I,59.98,1,low,fallback
+mobo,B550I,46.25,1,low,fallback
+mobo,X299X,630.55,1,low,fallback
+mobo,B860M,79.99,1,low,fallback
+mobo,Z87,95.0,1,low,fallback
+mobo,B150M,59.99,1,low,fallback
+ram,DDR4 Desktop 16GB,69.99,118,high,fallback
+ram,DDR4 Laptop 16GB,52.0,89,high,fallback
+ram,DDR4 Desktop 8GB,33.59,57,high,fallback
+ram,DDR4 Desktop 32GB,149.99,56,high,fallback
+ram,DDR5 Desktop 32GB,376.0,42,high,fallback
+ram,DDR5 Laptop 16GB,175.32,38,high,fallback
+ram,DDR5 Laptop 32GB,349.0,33,high,fallback
+ram,DDR3 Desktop 16GB,26.55,33,high,fallback
+ram,DDR4 Laptop 8GB,27.49,32,high,fallback
+ram,DDR4 Laptop 32GB,119.99,32,high,fallback
+ram,DDR5 Desktop 16GB,202.98,28,high,fallback
+ram,DDR3 Laptop 8GB,18.64,23,high,fallback
+ram,DDR5 Desktop 64GB,755.96,22,high,fallback
+ram,DDR3 Desktop 8GB,15.72,21,high,fallback
+ram,DDR5 Laptop 8GB,78.72,19,high,fallback
+ram,DDR4 Server 32GB,124.58,18,high,fallback
+ram,DDR3 Laptop 16GB,28.46,18,high,fallback
+ram,DDR4 Desktop 64GB,344.5,16,high,fallback
+ram,DDR3 Desktop 32GB,55.78,12,high,fallback
+ram,DDR4 Server 64GB,266.79,11,high,fallback
+ram,DDR4 Server 16GB,74.99,11,high,fallback
+ram,DDR4 Laptop 64GB,250.59,9,high,fallback
+ram,DDR3 Server 16GB,15.95,9,high,fallback
+ram,DDR4 Desktop 4GB,15.65,7,high,fallback
+ram,DDR3 Desktop 4GB,10.68,6,high,fallback
+ram,DDR5 Desktop 8GB,99.99,5,high,fallback
+ram,DDR3 Server 32GB,38.95,5,high,fallback
+ram,DDR3 Server 8GB,14.99,5,high,fallback
+ram,DDR3 Laptop 4GB,7.97,5,high,fallback
+ram,DDR5 Laptop 64GB,705.65,5,high,fallback
+ram,DDR5 Desktop 96GB,1424.97,4,high,fallback
+ram,DDR4 Laptop 4GB,18.05,4,high,fallback
+ram,DDR5 Desktop 48GB,674.5,4,high,fallback
+ram,DDR4 Server 128GB,508.38,4,high,fallback
+ram,DDR3 Server 128GB,154.44,4,high,fallback
+ram,DDR4 Desktop 128GB,506.36,3,high,fallback
+ram,DDR5 Server 16GB,399.99,3,high,fallback
+ram,DDR5 Server 64GB,2099.99,3,high,fallback
+ram,DDR4 Server 8GB,27.41,2,low,fallback
+ram,DDR3 Server 64GB,69.65,2,low,fallback
+ram,DDR3 Server 24GB,20.8,2,low,fallback
+ram,DDR3 Laptop 32GB,25.32,2,low,fallback
+ram,DDR3 Desktop 2GB,19.81,2,low,fallback
+ram,DDR5 Server 32GB,841.12,2,low,fallback
+ram,DDR4 Laptop 128GB,425.0,1,low,fallback
+ram,DDR4 Server 192GB,556.71,1,low,fallback
+ram,DDR4 Laptop 40GB,110.65,1,low,fallback
+ram,DDR4 Server 56GB,141.8,1,low,fallback
+ram,DDR5 Desktop 128GB,1699.99,1,low,fallback
+ram,DDR4 Server 48GB,145.99,1,low,fallback
+ram,DDR4 Server 256GB,1839.89,1,low,fallback
+ram,DDR3 Laptop 40GB,39.95,1,low,fallback
+ram,DDR3 Laptop 24GB,29.99,1,low,fallback
+ram,DDR3 Desktop 64GB,98.43,1,low,fallback
+ram,DDR3 Desktop 24GB,78.02,1,low,fallback
+ram,DDR3 Server 4GB,80.0,1,low,fallback
+ram,DDR3 Desktop 40GB,34.99,1,low,fallback
+ram,DDR5 Laptop 96GB,1049.0,1,low,fallback
+ram,DDR5 Server 8GB,86.62,1,low,fallback
