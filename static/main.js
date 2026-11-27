@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async function () {
   const $ = id => document.getElementById(id);
-  const { esc, money } = window.Parts;
+  const { esc, money, safeUrl } = window.Parts;
   const loadingScreen = $("loading");
   const hero = $("hero");
   const bench = $("bench");
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         <div class="r-head">
           ${verdict(d)}
           <p class="r-meta">${meta}</p>
-          <h2><a href="${esc(d.listing_url)}" target="_blank" rel="noopener">${esc(d.title)}</a></h2>
+          <h2><a href="${safeUrl(d.listing_url)}" target="_blank" rel="noopener">${esc(d.title)}</a></h2>
         </div>
         ${spreadBar(d)}
         <ul class="lines">

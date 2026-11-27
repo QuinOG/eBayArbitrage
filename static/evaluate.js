@@ -3,6 +3,7 @@
 // recalculated in the browser as you edit values, add parts, or change the price.
 
 document.addEventListener("DOMContentLoaded", function () {
+  const { esc, safeUrl } = window.Parts;
   const linkForm = document.getElementById("link_form");
   const manualForm = document.getElementById("manual_form");
   const titleBox = document.getElementById("title");
@@ -16,12 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let taxRate = 0;
   let taxOnShipping = true;
   let lowConfidence = false;
-
-  function esc(text) {
-    const div = document.createElement("div");
-    div.textContent = text == null ? "" : String(text);
-    return div.innerHTML;
-  }
 
   function money(n) {
     return (n < 0 ? "-$" : "$") + Math.abs(n).toFixed(2);
@@ -132,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
       `no price data, type a value${e.source !== "title" ? " · from " + e.source : ""}`, 0, true)));
 
     const link = d.listing_url
-      ? `<a href="${esc(d.listing_url)}" target="_blank" rel="noopener">${esc(d.title)}</a>`
+      ? `<a href="${safeUrl(d.listing_url)}" target="_blank" rel="noopener">${esc(d.title)}</a>`
       : esc(d.title);
     const flags = d.flags.length
       ? `<ul class="flags">${d.flags.map(f => `<li>${esc(f)}</li>`).join("")}</ul>`
