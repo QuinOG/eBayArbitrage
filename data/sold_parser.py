@@ -4,13 +4,14 @@ sold_parser.py - turn pasted eBay "Sold" search pages into a CPU price table.
 How to use:
   1. Open an eBay sold search (Sold + Completed filters on), Ctrl+A, Ctrl+C,
      paste into a .txt file. Do as many pages as you like; one big file is fine.
-  2. Put the .txt files in sold_data/raw/
-  3. Run:  python sold_parser.py sold_data/raw/cpu*.txt
-           python sold_parser.py --mobo sold_data/raw/mobo*.txt
-           python sold_parser.py --ram sold_data/raw/ram*.txt
-           python sold_parser.py --gpu sold_data/raw/gpu*.txt
+  2. Put the .txt files in data/raw/
+  3. Run:  python sold_parser.py data/raw/cpu*.txt
+           python sold_parser.py --mobo data/raw/mobo*.txt
+           python sold_parser.py --ram data/raw/ram*.txt
+           python sold_parser.py --gpu data/raw/gpu*.txt
            python sold_parser.py --combine     (merges everything into prices.csv)
   4. Each run writes <part>_price_table.csv and <part>_sales_clean.csv (every sale + why it was kept/skipped).
+     Run from any folder; output always goes to data/.
 
 Rules it applies:
   - Only "Pre-Owned" sales count (no "Brand New", no "For parts").
@@ -23,6 +24,7 @@ Rules it applies:
 """
 
 import csv
+import os
 import re
 import statistics
 import sys
@@ -30,6 +32,13 @@ from datetime import datetime, timedelta
 
 DAYS = 90
 MIN_SALES = 3  # fewer sales than this gets flagged "low data"
+
+# Every file this script writes goes next to this script (the data/ folder), wherever you run it from.
+DATA_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def data_path(name):
+    return os.path.join(DATA_DIR, name)
 
 JUNK = re.compile(
     r"for parts|not working|broken|bent pin|missing pin|damaged|as[- ]is|untested|"
@@ -333,10 +342,12 @@ def main(paths, kind="cpu"):
             seen.add(key)
             unique.append(s)
 
+    if not unique:
+        sys.exit("No sales found in the input files. Check you pasted a sold-search page.")
     cutoff = max(s["date"] for s in unique) - timedelta(days=DAYS)
     groups, reasons = {}, {}
     out = kind + "_"
-    with open(out + "sales_clean.csv", "w", newline="") as f:
+    with open(data_path(out + "sales_clean.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["sold_date", "brand", "model", "price", "shipping", "total", "format", "status", "title"])
         for s in unique:
@@ -365,7 +376,9 @@ def main(paths, kind="cpu"):
             flag="" if len(use) >= MIN_SALES else "low data",
         ))
     rows.sort(key=lambda r: (-r["sales"], r["model"]))
-    with open(out + "price_table.csv", "w", newline="") as f:
+    if not rows:
+        sys.exit(f"No {kind} sales passed the filters. Nothing written.")
+    with open(data_path(out + "price_table.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         w.writeheader()
         w.writerows(rows)
@@ -378,7 +391,7 @@ def main(paths, kind="cpu"):
                 core = next((CHIPSET.match(w) for w in model.split() if CHIPSET.match(w)), None)
             if core:
                 chips.setdefault(core.group(1), []).extend(t for _, t in items)
-        with open("mobo_chipset_table.csv", "w", newline="") as f:
+        with open(data_path("mobo_chipset_table.csv"), "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f)
             w.writerow(["chipset", "value", "sales", "low", "high"])
             for c, ts in sorted(chips.items(), key=lambda x: -len(x[1])):
@@ -390,7 +403,7 @@ def main(paths, kind="cpu"):
         for (gen, model), items in groups.items():
             parts = model.split()  # DDR4 Desktop 16GB (2x8GB) 3200
             caps.setdefault(" ".join(parts[:3]), []).extend(t for _, t in items)
-        with open("ram_capacity_table.csv", "w", newline="") as f:
+        with open(data_path("ram_capacity_table.csv"), "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f)
             w.writerow(["type_and_total", "value", "sales", "low", "high"])
             for c, ts in sorted(caps.items(), key=lambda x: -len(x[1])):
@@ -403,26 +416,50 @@ def main(paths, kind="cpu"):
     print(f"Wrote {out}price_table.csv ({len(rows)} models) and {out}sales_clean.csv.")
 
 
+PRICE_FIELDS = ["part", "model", "value", "sales", "confidence", "kind"]
+PARTS = ["cpu", "mobo", "ram", "gpu"]
+FALLBACK_TABLES = {"mobo": ("mobo_chipset_table.csv", "chipset"),
+                   "ram": ("ram_capacity_table.csv", "type_and_total")}
+
+
 def combine():
-    """Merge the per-part tables into one prices.csv (run after parsing all four part types)."""
-    import os
+    """Merge refreshed part tables into prices.csv. Parts without a new table keep their old rows."""
+    old = []
+    if os.path.exists(data_path("prices.csv")):
+        with open(data_path("prices.csv"), newline="", encoding="utf-8") as f:
+            old = list(csv.DictReader(f))
+    refreshed = [p for p in PARTS if os.path.exists(data_path(f"{p}_price_table.csv"))]
+    if not refreshed:
+        sys.exit("No *_price_table.csv files found in data/. Run a --cpu/--mobo/--ram/--gpu refresh first.")
+
     rows = []
-    for part in ["cpu", "mobo", "ram", "gpu"]:
-        if os.path.exists(f"{part}_price_table.csv"):
-            for r in csv.DictReader(open(f"{part}_price_table.csv")):
+    for part in PARTS:
+        if part not in refreshed:
+            rows += [r for r in old if r["part"] == part]
+            continue
+        with open(data_path(f"{part}_price_table.csv"), newline="", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
                 rows.append(dict(part=part, model=r["model"], value=r["value"], sales=r["sales"],
                                  confidence="low" if r["flag"] else "high", kind="exact"))
-    for fname, part, key in [("mobo_chipset_table.csv", "mobo", "chipset"),
-                             ("ram_capacity_table.csv", "ram", "type_and_total")]:
-        if os.path.exists(fname):
-            for r in csv.DictReader(open(fname)):
-                rows.append(dict(part=part, model=r[key], value=r["value"], sales=r["sales"],
-                                 confidence="high" if int(r["sales"]) >= MIN_SALES else "low", kind="fallback"))
-    with open("prices.csv", "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["part", "model", "value", "sales", "confidence", "kind"])
+        if part in FALLBACK_TABLES and os.path.exists(data_path(FALLBACK_TABLES[part][0])):
+            fname, key = FALLBACK_TABLES[part]
+            with open(data_path(fname), newline="", encoding="utf-8") as f:
+                for r in csv.DictReader(f):
+                    rows.append(dict(part=part, model=r[key], value=r["value"], sales=r["sales"],
+                                     confidence="high" if int(r["sales"]) >= MIN_SALES else "low",
+                                     kind="fallback"))
+        else:
+            rows += [r for r in old if r["part"] == part and r["kind"] == "fallback"]
+
+    tmp = data_path("prices.csv.tmp")
+    with open(tmp, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=PRICE_FIELDS)
         w.writeheader()
         w.writerows(rows)
-    print(f"Wrote prices.csv ({len(rows)} rows).")
+    os.replace(tmp, data_path("prices.csv"))
+    kept = [p for p in PARTS if p not in refreshed]
+    print(f"Wrote prices.csv ({len(rows)} rows). Refreshed: {', '.join(refreshed)}. "
+          f"Kept: {', '.join(kept) or 'none'}.")
 
 
 if __name__ == "__main__":
