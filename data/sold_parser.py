@@ -149,7 +149,7 @@ def extract_ram(title):
         form = "Desktop"
     m = (re.search(r"(\d+)\s*gb\s*\(\s*(\d+)\s*x\s*(\d+)\s*gb", t)
          or re.search(r"\(\s*(\d+)\s*x\s*(\d+)\s*gb", t)
-         or re.search(r"\b(\d+)\s*x\s*(\d+)\s*gb", t))
+         or re.search(r"\b([1-8])\s*x\s*(\d+)\s*gb", t))
     if m and len(m.groups()) == 3:
         n, each = int(m[2]), int(m[3])
     elif m:
@@ -191,31 +191,45 @@ MULTI_VRAM = {"RTX 3060": (8, 12), "RTX 3050": (6, 8), "RTX 2060": (6, 12), "GTX
 def extract_gpu(title):
     t = title.lower().replace("geforce", " ")
     chip = None
+    chip_end = 0
     m = re.search(r"\b(rtx|gtx|gt)\s*-?\s*(\d{3,4})\s*(ti|super)?\s*(super)?\b", t)
     if m and not re.search(r"\bquadro\b", t):
         chip = "NVIDIA", f"{m[1].upper()} {m[2]}" + "".join(f" {x.title() if x == 'ti' else x.upper()}" for x in (m[3], m[4]) if x)
+        chip_end = m.end()
     if not chip:
         m = re.search(r"\brtx\s*a(\d{3,4})\b", t) or re.search(r"quadro\s*(?:rtx\s*)?([kmptab]?\d{3,4})\b", t)
         if m:
             chip = "NVIDIA", ("RTX A" + m[1] if "rtx a" in m[0] else "Quadro " + m[1].upper())
+            chip_end = m.end()
     if not chip:
         m = re.search(r"\b(t400|t600|t1000)\b", t) or re.search(r"tesla\s*([a-z]\d{1,3}[a-z]?)\b", t)
         if m:
             chip = "NVIDIA", ("Tesla " if "tesla" in m[0] else "") + m[1].upper()
+            chip_end = m.end()
     if not chip:
         m = re.search(r"\brx\s*-?\s*(\d{3,4})\s*(xtx|xt|gre)?\b", t)
         if m:
             chip = "AMD", f"RX {m[1]}" + (f" {m[2].upper()}" if m[2] else "")
+            chip_end = m.end()
     if not chip:
         m = re.search(r"\bvega\s*(56|64)\b", t) or re.search(r"\barc\s*([ab]\d{3})\b", t)
         if m:
             chip = ("AMD", f"RX Vega {m[1]}") if "vega" in m[0] else ("Intel", f"Arc {m[1].upper()}")
+            chip_end = m.end()
     if not chip:
         return None
     brand, model = chip
     if model in MULTI_VRAM:
-        v = re.search(r"\b(\d{1,2})\s*gb?\b", t)
-        vram = int(v[1]) if v and int(v[1]) in MULTI_VRAM[model] else None
+        sizes = MULTI_VRAM[model]
+        # Memory right after the model ("RTX 3060 12GB", "RTX 3060 Ventus 2X 12G") wins.
+        # Otherwise take a size that fits this model and isn't system RAM ("16GB DDR4").
+        near = re.search(r"\b(\d{1,2})\s*gb?\b", t[chip_end:chip_end + 25])
+        vram = int(near[1]) if near and int(near[1]) in sizes else None
+        if vram is None:
+            for v in re.finditer(r"\b(\d{1,2})\s*gb?\b(?!\s*(?:ddr|ram|memory|sodimm))", t):
+                if int(v[1]) in sizes:
+                    vram = int(v[1])
+                    break
         model += f" {vram}GB" if vram else " (VRAM unknown)"
     return brand, model
 
