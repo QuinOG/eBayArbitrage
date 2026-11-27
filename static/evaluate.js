@@ -3,6 +3,7 @@
 // recalculated in the browser as you edit values, add parts, or change the price.
 
 document.addEventListener("DOMContentLoaded", function () {
+  const { esc, safeUrl, money } = window.Parts;
   const linkForm = document.getElementById("link_form");
   const manualForm = document.getElementById("manual_form");
   const titleBox = document.getElementById("title");
@@ -29,16 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
     loadedNote.hidden = !count;
     loadedNote.querySelector("span").textContent =
       `Also uses the ${count} item specifics from the loaded listing.`;
-  }
-
-  function esc(text) {
-    const div = document.createElement("div");
-    div.textContent = text == null ? "" : String(text);
-    return div.innerHTML;
-  }
-
-  function money(n) {
-    return (n < 0 ? "-$" : "$") + Math.abs(n).toFixed(2);
   }
 
   function num(input) {
@@ -122,23 +113,46 @@ document.addEventListener("DOMContentLoaded", function () {
     const part = row.querySelector(".part-type").value;
     const text = row.querySelector(".part-name").value.trim();
     const note = row.querySelector(".lookup");
+    // Each call takes a new number, so an older answer that arrives late is ignored.
+    const ticket = (row._ticket || 0) + 1;
+    row._ticket = ticket;
     if (!part) {
       note.textContent = "no price data for this type, type a value";
       return;
     }
-    if (!text) return;
+    if (!text) {
+      row.querySelector(".value").value = "0.00";
+      recalc();
+      return;
+    }
     note.textContent = "looking up...";
-    const response = await fetch("/api/price", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ part, text }),
-    });
-    const p = await response.json();
+    let response, p;
+    try {
+      response = await fetch("/api/price", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ part, text }),
+      });
+      if (row._ticket !== ticket) return;
+      p = await response.json();
+      if (row._ticket !== ticket) return;
+    } catch (err) {
+      if (row._ticket !== ticket) return;
+      console.error(err);
+      note.textContent = "lookup failed, type a value";
+      row.classList.add("low-row");
+      row.querySelector(".dot").className = "dot low";
+      row.querySelector(".value").value = "0.00";
+      recalc();
+      return;
+    }
     const low = !response.ok || p.confidence !== "high";
     row.classList.toggle("low-row", low);
     row.querySelector(".dot").className = "dot " + (low ? "low" : "high");
     if (!response.ok) {
       note.textContent = p.error;
+      row.querySelector(".value").value = "0.00";
+      recalc();
       return;
     }
     note.textContent = `${p.model} · ${partDetail(p)}`;
@@ -153,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
       `no price data, type a value${e.source !== "title" ? " · from " + e.source : ""}`, 0, true)));
 
     const link = d.listing_url
-      ? `<a href="${esc(d.listing_url)}" target="_blank" rel="noopener">${esc(d.title)}</a>`
+      ? `<a href="${safeUrl(d.listing_url)}" target="_blank" rel="noopener">${esc(d.title)}</a>`
       : esc(d.title);
     const flags = d.flags.length
       ? `<ul class="flags">${d.flags.map(f => `<li>${esc(f)}</li>`).join("")}</ul>`

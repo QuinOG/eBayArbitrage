@@ -17,7 +17,7 @@ Lookup order: exact model, then fallback, then "no data" (count as $0 and flag i
 ## sold_parser.py
 Two jobs:
 1. **Refreshing prices.** Copy an eBay sold-search page (Ctrl+A, Ctrl+C), paste into a .txt, then run
-   `python sold_parser.py --cpu|--mobo|--ram|--gpu file.txt`. It writes per-part tables; then `python sold_parser.py --combine` merges them into prices.csv.
+   `python sold_parser.py --cpu|--mobo|--ram|--gpu file.txt`. It writes per-part tables; then `python sold_parser.py --combine` merges them into prices.csv. `--combine` keeps the rows of any part you didn't refresh.
 2. **Reading listing titles.** `extract_models` (CPU), `extract_mobo`, `extract_ram` and `extract_gpu` turn a title into
    the exact model names used in prices.csv. The scanner should import these, not rewrite them, so names always match.
 

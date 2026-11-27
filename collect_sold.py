@@ -176,11 +176,6 @@ def build_prices(parts):
         backup = f"prices_backup_{date.today()}.csv"
         shutil.copy("prices.csv", backup)
         print(f"\nBacked up the old prices.csv to data/{backup}")
-    old_rows = []
-    if os.path.exists("prices.csv"):
-        with open("prices.csv", newline="", encoding="utf-8") as f:
-            old_rows = list(csv.DictReader(f))
-    missing = []
     for part in parts:
         folder = os.path.join("raw", part)
         files = sorted(os.path.join(folder, f) for f in os.listdir(folder)
@@ -188,9 +183,8 @@ def build_prices(parts):
         print(f"\n== Building {part} prices from {len(files)} saved page(s)")
         if not files:
             print(f"  No saved pages in data/raw/{part}/. Keeping the {part} rows from the old prices.csv.")
-            missing.append(part)
             if os.path.exists(f"{part}_price_table.csv"):
-                os.remove(f"{part}_price_table.csv")  # so combine() doesn't also add a stale table
+                os.remove(f"{part}_price_table.csv")  # with no table, combine() keeps the old rows
             if part == "mobo" and os.path.exists("mobo_chipset_table.csv"):
                 os.remove("mobo_chipset_table.csv")
             if part == "ram" and os.path.exists("ram_capacity_table.csv"):
@@ -199,11 +193,6 @@ def build_prices(parts):
         sold_parser.main(files, part)
     print()
     sold_parser.combine()
-    kept = [r for r in old_rows if r["part"] in missing]
-    if kept:
-        with open("prices.csv", "a", newline="", encoding="utf-8") as f:
-            csv.DictWriter(f, fieldnames=["part", "model", "value", "sales", "confidence", "kind"]).writerows(kept)
-        print(f"Kept {len(kept)} old rows for: {', '.join(missing)}.")
 
 
 def main():
