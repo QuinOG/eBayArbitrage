@@ -13,6 +13,8 @@ FIXTURE = {
     ("mobo", "B660M"): {"value": 85.0, "sales": 5, "confidence": "high", "kind": "fallback"},
     ("ram", "DDR4 Desktop 16GB"): {"value": 50.0, "sales": 5, "confidence": "high", "kind": "fallback"},
     ("gpu", "RTX 3060 12GB"): {"value": 300.0, "sales": 20, "confidence": "high", "kind": "exact"},
+    ("mobo", "B550"): {"value": 80.0, "sales": 30, "confidence": "high", "kind": "fallback"},
+    ("cpu", "Ryzen 5 5600X"): {"value": 120.0, "sales": 10, "confidence": "high", "kind": "exact"},
 }
 SEARCH = {s["name"]: s for s in config.SEARCHES}
 
@@ -91,7 +93,43 @@ class ScoringTest(unittest.TestCase):
     def test_damaged_title(self):
         result = self.score("CPU", "Intel Core i7-8700 - Untested, For Parts", 40, 0)
         self.assertTrue(any("damaged or untested" in flag for flag in result["flags"]))
-        self.assertEqual(result["confidence"], "high")  # current behavior, plan 003 changes this
+        self.assertEqual(result["confidence"], "low")
+
+    def test_untested_for_parts_is_low(self):
+        result = self.score("CPU", "Intel Core i7-8700 - Untested, For Parts", 20, 0)
+        self.assertEqual(result["confidence"], "low")
+
+    def test_missing_board_is_low(self):
+        result = self.score("Combo", "AMD Ryzen 5 3600 CPU and 16GB DDR4 RAM Combo", 40, 0)
+        self.assertIn("mobo", [part["part"] for part in result["missing"]])
+        self.assertEqual(result["confidence"], "low")
+
+    def test_unknown_shipping_is_low(self):
+        result = self.score("CPU", "Intel Core i7-8700", 40, None)
+        self.assertEqual(result["confidence"], "low")
+
+    def test_lot_is_low(self):
+        result = self.score("CPU", "Lot of 5 Intel Core i5-8500 3.0GHz SR3XE LGA1151 CPU", 40, 0)
+        self.assertEqual(result["confidence"], "low")
+
+    def test_chipset_fallback_is_low(self):
+        result = self.score("Combo", "Intel i5-12400F + B660M Motherboard + 16GB DDR4 Bundle", 40, 0)
+        self.assertEqual(result["confidence"], "low")
+
+    def test_full_board_name_fallback_is_low(self):
+        result = self.score("Combo", "MSI B550 GAMING PLUS Ryzen 5 5600X Combo", 40, 0)
+        board = next(part for part in result["parts"] if part["part"] == "mobo")
+        self.assertEqual(board["priced_as"], "B550")
+        self.assertEqual(result["confidence"], "low")
+        self.assertTrue(any("priced as an average B550 board" in flag for flag in result["flags"]))
+
+    def test_description_junk_is_low(self):
+        result = self.score("CPU", "Intel Core i7-8700", 40, 0, description=["Sold as-is"])
+        self.assertEqual(result["confidence"], "low")
+
+    def test_clean_listing_stays_high(self):
+        result = self.score("CPU", "Intel Core i7-8700", 40, 5)
+        self.assertEqual(result["confidence"], "high")
 
     def test_multiple_cpu_models(self):
         model, problem = scanner.find_part("cpu", "i7-8700 and i5-8500")

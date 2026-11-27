@@ -182,6 +182,7 @@ def score_listing(listing, search):
     if search["parts"] == ["cpu"] and lot and int(lot[1]) > 1:
         quantity = int(lot[1])
         flags.append(f"Lot of {quantity}: CPU value multiplied by {quantity}. Check every chip is the same model.")
+    risky = quantity > 1  # True when a flag means the profit is a guess
 
     for part in search["parts"]:
         name = PART_NAMES[part]
@@ -211,8 +212,12 @@ def score_listing(listing, search):
         parts.append(make_part(part, model, price, quantity if part == "cpu" else 1, source))
         if price is None:
             flags.append(f"No price data for {name} '{model}'. Counted as $0.")
-        elif part == "mobo" and price["kind"] == "fallback" and model == price["priced_as"]:
-            flags.append(f"Board brand and model unknown, priced as an average {model} board.")
+        elif part == "mobo" and price["kind"] == "fallback":
+            risky = True
+            if model == price["priced_as"]:
+                flags.append(f"Board brand and model unknown, priced as an average {model} board.")
+            else:
+                flags.append(f"No sold data for '{model}', priced as an average {price['priced_as']} board.")
         if source != "title":
             flags.append(f"{name} '{model}' is from the {source}, not the title. Check it's included.")
         if "VRAM unknown" in model:
@@ -228,9 +233,12 @@ def score_listing(listing, search):
         flags.append(f"Description mentions '{junk[0]}'. Values assume working parts.")
     if MOBO_JUNK.search(title):
         flags.append("Title suggests parts may be damaged or untested. Values assume working parts.")
+    if junk or MOBO_JUNK.search(title):
+        risky = True
 
     shipping = listing.get("shipping")
     if shipping is None:
+        risky = True
         flags.append("Shipping cost unknown. Counted as $0.")
         shipping = 0.0
 
@@ -241,7 +249,8 @@ def score_listing(listing, search):
     parts_value = round(sum(p["value"] for p in parts), 2)
     profit = round(parts_value - cost, 2)
 
-    low = any(p["confidence"] != "high" for p in parts) or not parts
+    # Low when any price is thin, a required part is missing, or a flag means the profit is a guess.
+    low = not parts or bool(missing) or risky or any(p["confidence"] != "high" for p in parts)
     return {
         **listing,
         "search": search["name"],
