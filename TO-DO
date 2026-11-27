@@ -1,4 +1,26 @@
-- fix sold scraping method (currently defaulting to avg sold price point - need to grab median price of 5 sold listings)
-- figure out why its only scraping 3 listings then deafulting to use active on the rest
-- speed up scraping process?
-- add support for gpus
+Setup
+- MySQL root/root was committed in app.py's history. The MySQL code is gone now, but change that password if that database is ever reachable from another machine.
+
+Price accuracy
+- prices.csv values are eBay sold prices. Local flip prices may be lower or higher. Refresh the data every 1-2 weeks.
+- coolers, PSUs, storage and cases have no price data, so they count as $0 until you type a value on the evaluate page.
+  Desktop and combo profit is understated by their value. Collecting sold prices for them would fix it.
+- prebuilt desktops (Dell OptiPlex, HP, Lenovo) never have an identifiable board, so the board counts as $0
+- the desktop search (179) is mostly prebuilt office PCs, all-in-ones and Raspberry Pis. Their titles say "8GB RAM"
+  without DDR type, so RAM isn't found either. Few deals will come from it as long as it's valued by parts.
+- "16GB DDR4" with no kit layout is read as 1x16GB, which prices a bit lower than 2x8GB
+
+sold_parser.py extractors (found while testing; scanner works around some of these)
+- extract_mobo needs a brand in the title. scanner.mobo_by_chipset now prices "B660M Motherboard" as an average B660M board.
+- extract_mobo keeps words like "combo" and "bundle" in the model name. scanner.clean_title strips them.
+- extract_mobo drops words before a dashed chipset: "ASUS TUF GAMING Z490-PLUS" becomes "ASUS Z490-PLUS",
+  which misses the exact price and uses the chipset fallback
+- extract_ram reads GPU memory as RAM ("RTX 3070 8GB 32GB DDR4" -> 8GB) and extract_mobo picks up storage words ("1TB").
+  scanner.clean_title strips these before extracting; fixing the extractors would be cleaner.
+
+Ideas
+- the scanner page only reads titles. Reading descriptions there would cost 1 extra API call per listing
+  (about 110 per scan). Could do it just for combo listings with missing parts.
+- after loading a listing by link, pressing Evaluate again only resends the title and description, not the item specifics
+- add a GPU-only search (confirm the category ID with check_categories.py)
+- cache Browse API results for a minute or two so page refreshes don't use extra calls (3 calls per refresh, limit 5,000/day)
