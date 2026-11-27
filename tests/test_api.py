@@ -38,3 +38,47 @@ class ApiTest(unittest.TestCase):
         listing = response.get_json()["listing"]
         self.assertIsInstance(listing["profit"], (int, float))
         self.assertEqual(listing["parts"][0]["model"], "Core i7-8700")
+
+    def assertBadRequest(self, response):
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("error", response.get_json())
+
+    def test_evaluate_nan_price(self):
+        self.assertBadRequest(self.client.post("/api/evaluate", json={"title": "Intel Core i7-8700", "price": "NaN"}))
+
+    def test_evaluate_infinite_price(self):
+        self.assertBadRequest(self.client.post("/api/evaluate", json={"title": "Intel Core i7-8700", "price": "Infinity"}))
+
+    def test_evaluate_negative_price(self):
+        self.assertBadRequest(self.client.post("/api/evaluate", json={"title": "Intel Core i7-8700", "price": -5}))
+
+    def test_evaluate_bad_shipping(self):
+        response = self.client.post("/api/evaluate", json={"title": "Intel Core i7-8700", "price": 40, "shipping": "abc"})
+        self.assertBadRequest(response)
+        self.assertIn("shipping", response.get_json()["error"].lower())
+
+    def test_evaluate_array_body(self):
+        self.assertBadRequest(self.client.post("/api/evaluate", json=[1, 2]))
+
+    def test_evaluate_number_title(self):
+        self.assertBadRequest(self.client.post("/api/evaluate", json={"title": 123}))
+
+    def test_evaluate_number_link_does_not_call_ebay(self):
+        with mock.patch("app.get_item") as get_item:
+            response = self.client.post("/api/evaluate", json={"link": 123456789012})
+        self.assertBadRequest(response)
+        get_item.assert_not_called()
+
+    def test_price_number_text(self):
+        self.assertBadRequest(self.client.post("/api/price", json={"part": "cpu", "text": 8700}))
+
+    def test_price_array_body(self):
+        self.assertBadRequest(self.client.post("/api/price", json=["cpu"]))
+
+    def test_evaluate_string_numbers_and_blank_shipping_still_work(self):
+        response = self.client.post("/api/evaluate", json={"title": "Intel Core i7-8700", "price": "40", "shipping": ""})
+        self.assertEqual(response.status_code, 200)
+
+    def test_evaluate_missing_price_defaults_to_zero(self):
+        response = self.client.post("/api/evaluate", json={"title": "Intel Core i7-8700"})
+        self.assertEqual(response.status_code, 200)
