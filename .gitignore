@@ -1,0 +1,15 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Files sold_parser.py writes when refreshing prices
+data/*_price_table.csv
+data/*_sales_clean.csv
+data/mobo_chipset_table.csv
+data/ram_capacity_table.csv
+data/raw/

@@ -3,73 +3,107 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <title>Deal Scanner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/styles.css">
-  <link rel="favicon" href="/static/fv.png">
+  <script src="/static/theme.js"></script>
+  <link rel="icon" href="/static/fv.png">
 </head>
 <body>
-  <header>
+  <header class="site-header">
     <div class="header-top">
-      <a class="title" href="/">Dummy Deals</a>
+      <a class="title" href="/">
+        <svg class="mark" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M3 3h7.2l6.8 6.8-7.2 7.2L3 10.2z" stroke-linejoin="round"/>
+          <circle cx="7" cy="7" r="1.25" fill="currentColor" stroke="none"/>
+        </svg>
+        Deal Scanner
+      </a>
       <nav>
-        <a href="/">Home</a>
-        <a href="#">Features</a>
-        <a href="#">Pricing</a>
+        <a href="/" aria-current="page">Scanner</a>
+        <a href="/evaluate">Evaluate a listing</a>
+        <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to light">
+          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.99 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.78 9.79z"/></svg>
+        </button>
       </nav>
     </div>
-    <!-- Filter & Sorting Container -->
-    <div class="filter-container">
-      <form id="filter_form">
-        <div class="filter-checkboxes">
-          <fieldset>
-            <legend style="display:none;">Category</legend>
-            <label><input type="checkbox" name="category" value="GPU">GPU</label>
-            <label><input type="checkbox" name="category" value="CPU">CPU</label>
-            <label><input type="checkbox" name="category" value="Memory">Memory</label>
-            <label><input type="checkbox" name="category" value="SSD">SSD</label>
-            <label><input type="checkbox" name="category" value="Motherboard">Motherboard</label>
-            <label><input type="checkbox" name="category" value="HDD">HDD</label>
-          </fieldset>
-          <fieldset>
-            <legend style="display:none;">Deal Type</legend>
-            <label><input type="checkbox" name="deal_type" value="fair">Fair Deal</label>
-            <label><input type="checkbox" name="deal_type" value="good">Good Deal</label>
-            <label><input type="checkbox" name="deal_type" value="great">Great Deal</label>
-          </fieldset>
-        </div>
-      </form>
-      <!-- Sorting Dropdown -->
-      <div class="sort-container" style="margin-top: 10px;">
-        <label for="sort_by">Sort by:</label>
+  </header>
+
+  <div class="toolbar-bar">
+    <div class="toolbar">
+      <div class="filter-checkboxes">
+        <fieldset id="search-filters">
+          <!-- one checkbox per search type, added by main.js -->
+        </fieldset>
+        <fieldset>
+          <label><input type="checkbox" id="hide_low">Hide low confidence</label>
+        </fieldset>
+      </div>
+      <div class="sort-container">
+        <label for="min_profit">Min profit</label>
+        <select id="min_profit">
+          <option value="20">$20</option>
+          <option value="15">$15</option>
+          <option value="10">$10</option>
+          <option value="5">$5</option>
+          <option value="0">$0</option>
+          <option value="all">Any, show losses</option>
+        </select>
+        <label for="sort_by">Sort</label>
         <select id="sort_by">
-          <option value="newest" selected>Newest Listings</option>
-          <option value="deal_type">Deal Type</option>
-          <option value="cpu">CPU Type</option>
-          <option value="net_profit">Net Profit</option>
-          <option value="price_asc">Price (asc)</option>
-          <option value="price_desc">Price (desc)</option>
+          <option value="profit" selected>Profit</option>
+          <option value="newest">Newest</option>
+          <option value="price_asc">Price, low to high</option>
         </select>
       </div>
     </div>
-  </header>
-  
-  <!-- Loading Screen -->
-  <div id="loading" class="loading-screen">
-    <div class="spinner"></div>
-    <p>Loading deals...</p>
   </div>
 
-  <!-- Deals Container (initially hidden) -->
-  <div id="deals-container" class="container" style="display:none;">
-    <!-- Deal cards will be dynamically injected here -->
-  </div>
-  
-  <footer>
-    &copy; 2025 Dummy Deals. All Rights Reserved.
-  </footer>
-  
-  <!-- Client-Side Filtering and Sorting Script -->
+  <main class="page">
+    <div id="errors"></div>
+
+    <div id="loading" class="loading-screen">
+      <div class="spinner"></div>
+      <p>Scanning eBay and pricing parts</p>
+    </div>
+
+    <section id="hero" class="hero" hidden>
+      <div class="hero-text">
+        <p id="summary" class="eyebrow"></p>
+        <h1 id="headline"></h1>
+        <p id="hero-sub" class="hero-sub"></p>
+      </div>
+      <figure id="bench" class="bench"></figure>
+    </section>
+
+    <section id="overview" class="panel chart-panel" hidden>
+      <div class="panel-head">
+        <h2>Price against parts value</h2>
+        <ul class="legend">
+          <li><span class="key deal"></span>Clears <span id="legend-min">$20</span></li>
+          <li><span class="key"></span>Below minimum</li>
+          <li><span class="key ring"></span>Low confidence</li>
+        </ul>
+      </div>
+      <div class="chart-wrap">
+        <div id="chart" class="chart" role="img" aria-label="Each listing plotted by what it costs against what its parts sell for"></div>
+        <div id="chart-tip" class="chart-tip" hidden></div>
+      </div>
+      <p class="chart-note">Dots above the dashed line make money. Dots in the green band clear your minimum. Click one to jump to its receipt.</p>
+    </section>
+
+    <div id="deals-head" class="section-head" hidden>
+      <h2>Listings</h2>
+      <p id="deals-count"></p>
+    </div>
+    <div id="deals-container" class="container" hidden></div>
+  </main>
+
+  <footer>Parts priced from data/prices.csv, eBay sold prices from the last 90 days</footer>
+
+  <script src="/static/parts.js"></script>
   <script src="/static/main.js"></script>
 </body>
 </html>

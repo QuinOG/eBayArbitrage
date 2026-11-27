@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evaluate a Listing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/theme.js"></script>
+  <link rel="icon" href="/static/fv.png">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-top">
+      <a class="title" href="/">
+        <svg class="mark" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M3 3h7.2l6.8 6.8-7.2 7.2L3 10.2z" stroke-linejoin="round"/>
+          <circle cx="7" cy="7" r="1.25" fill="currentColor" stroke="none"/>
+        </svg>
+        Deal Scanner
+      </a>
+      <nav>
+        <a href="/">Scanner</a>
+        <a href="/evaluate" aria-current="page">Evaluate a listing</a>
+        <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to light">
+          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.99 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.78 9.79z"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page eval-page">
+    <section class="panel eval-form">
+      <h1>Evaluate a listing</h1>
+      <form id="link_form" class="eval-row">
+        <input id="link" type="text" placeholder="eBay link or item number">
+        <button type="submit">Load from eBay</button>
+      </form>
+
+      <p class="hint">Reads the title, item specifics and description.</p>
+
+      <p class="or">Or enter it by hand, for Facebook, Craigslist or any other listing</p>
+
+      <form id="manual_form">
+        <label>Title
+          <span class="hint">Add missing specs here, like "16GB DDR4 3200", then evaluate again</span>
+          <textarea id="title" rows="2" placeholder="MSI B450 TOMAHAWK MAX + Ryzen 5 3600 + 16GB DDR4 3200"></textarea>
+        </label>
+        <label>Description
+          <span class="hint">Optional. Parts the title doesn't name are looked for here, one line at a time</span>
+          <textarea id="description" rows="5" placeholder="CPU: Ryzen 5 3600&#10;RAM: 16GB (2x8GB) DDR4 3200&#10;Comes with the stock Wraith cooler"></textarea>
+        </label>
+        <div class="eval-row">
+          <label>Price <input id="price" type="number" step="0.01" min="0" value="0"></label>
+          <label>Shipping <input id="shipping" type="number" step="0.01" min="0" value="0"></label>
+          <button type="submit">Evaluate</button>
+        </div>
+      </form>
+      <p id="error" class="error"></p>
+    </section>
+
+    <figure id="bench" class="bench eval-bench" hidden></figure>
+
+    <div class="receipt-wrap">
+      <section id="result" class="receipt eval-result" style="display:none;"></section>
+    </div>
+  </main>
+
+  <script src="/static/parts.js"></script>
+  <script src="/static/evaluate.js"></script>
+</body>
+</html>
