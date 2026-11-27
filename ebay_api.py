@@ -25,22 +25,33 @@ TOKEN_URL = "https://api.ebay.com/identity/v1/oauth2/token"
 CONDITION_IDS = "1000|1500|2000|2010|2020|2030|2500|3000"
 
 TOKEN_CACHE = {"token": None, "expires_at": None}
+RETRY_STATUSES = {429, 500, 502, 503, 504}
 
 
 def request_with_retry(method, url, max_attempts=3, delay=3, **kwargs):
-    """Make an HTTP request, retrying on errors and 503 responses."""
+    """Retry network errors, rate limits, and transient server errors."""
     response = None
     for attempt in range(max_attempts):
+        wait = delay
         try:
             response = requests.request(method, url, timeout=20, **kwargs)
-            if response.status_code != 503:
-                return response
-            if DEBUG:
-                print(f"Attempt {attempt + 1}: got 503 from {url}, retrying in {delay}s")
         except requests.RequestException as e:
+            reason = str(e)
+        else:
+            if response.status_code not in RETRY_STATUSES:
+                return response
+            reason = f"got {response.status_code} from {url}"
+            if response.status_code == 429:
+                retry_after = response.headers.get("Retry-After", "").strip()
+                if retry_after.isdecimal():
+                    wait = min(int(retry_after), 10)
+        if attempt == max_attempts - 1:
             if DEBUG:
-                print(f"Attempt {attempt + 1}: {e}, retrying in {delay}s")
-        time.sleep(delay)
+                print(f"Attempt {attempt + 1}: {reason}")
+            break
+        if DEBUG:
+            print(f"Attempt {attempt + 1}: {reason}, retrying in {wait}s")
+        time.sleep(wait)
         delay *= 2
     if response is None:
         raise Exception(f"No response from {url} after {max_attempts} attempts")
@@ -129,7 +140,11 @@ def get_item(link_or_number):
     m = re.search(r"/itm/(?:[^/?#]+/)?(\d{9,15})", link_or_number) or re.fullmatch(r"\s*(\d{9,15})\s*", link_or_number)
     if not m:
         raise ValueError("That doesn't look like an eBay listing link or item number.")
-    response = request_with_retry("GET", ITEM_URL, headers=api_headers(), params={"legacy_item_id": m[1]})
+    params = {"legacy_item_id": m[1]}
+    response = request_with_retry("GET", ITEM_URL, headers=api_headers(), params=params)
+    if response.status_code == 401:
+        TOKEN_CACHE["token"] = None
+        response = request_with_retry("GET", ITEM_URL, headers=api_headers(), params=params)
     if response.status_code == 404:
         raise ValueError("eBay couldn't find that listing. It may have ended.")
     if response.status_code != 200:
@@ -182,6 +197,9 @@ def search_listings(category_id):
         "limit": config.LISTINGS_PER_SEARCH,
     }
     response = request_with_retry("GET", BROWSE_URL, headers=api_headers(), params=params)
+    if response.status_code == 401:
+        TOKEN_CACHE["token"] = None
+        response = request_with_retry("GET", BROWSE_URL, headers=api_headers(), params=params)
     if response.status_code != 200:
         raise Exception(f"Browse API error {response.status_code}: {response.text[:300]}")
 

@@ -3,10 +3,20 @@
 // with its sold price from data/prices.csv.
 
 window.Parts = (function () {
+  // Text made safe to put inside HTML, including inside quoted attributes.
   function esc(text) {
-    const div = document.createElement("div");
-    div.textContent = text == null ? "" : String(text);
-    return div.innerHTML;
+    return (text == null ? "" : String(text))
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  // A link that can only be http or https. Anything else (javascript:, data:) becomes "#".
+  function safeUrl(url) {
+    const s = url == null ? "" : String(url).trim();
+    return /^https?:\/\//i.test(s) ? esc(s) : "#";
   }
 
   function money(n) {
@@ -176,5 +186,5 @@ window.Parts = (function () {
         </div>`).join("") + `</div>`;
   }
 
-  return { items, money, esc };
+  return { items, money, esc, safeUrl };
 })();

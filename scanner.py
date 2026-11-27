@@ -13,7 +13,7 @@ import re
 
 import config
 from prices import lookup
-from data.sold_parser import CHIPSET, MOBO_JUNK, extract_gpu, extract_mobo, extract_models, extract_ram
+from data.sold_parser import CHIPSET, MOBO_JUNK, MODEL_PATTERNS, extract_gpu, extract_mobo, extract_ram
 
 PART_NAMES = {"cpu": "CPU", "mobo": "Motherboard", "ram": "RAM", "gpu": "GPU"}
 
@@ -42,6 +42,22 @@ def clean_title(part, title):
 # A description line saying a part isn't included is skipped completely.
 NOT_INCLUDED = re.compile(r"not included|n'?t (?:come|include)|does not (?:come|include)|without|sold separately|"
                           r"\bno (?:cpu|ram|gpu|memory|graphics|processor|cooler|psu)\b", re.IGNORECASE)
+
+# Words in a TITLE that say one part isn't in the box. Checked per part, so "no RAM" still counts the CPU.
+# "no CPU cooler" is about the cooler, so the CPU patterns refuse a following cooler/fan/heatsink.
+NOT_A_COOLER = r"(?!\s*(?:cooler|fan|heatsink|heat sink))"
+TITLE_EXCLUDES = {
+    "cpu": re.compile(r"\bno (?:cpu|processor)\b" + NOT_A_COOLER + r"|\b(?:cpu|processor) not included\b|"
+                      r"\bwithout (?:a |the )?(?:cpu|processor)\b" + NOT_A_COOLER + r"|"
+                      r"\b(?:box|cooler|fan|heatsink) only\b|\bempty box\b", re.IGNORECASE),
+    "mobo": re.compile(r"\bno (?:motherboard|mobo|board)\b|\b(?:motherboard|mobo|board) not included\b|"
+                       r"\bwithout (?:a |the )?(?:motherboard|mobo|board)\b", re.IGNORECASE),
+    "ram": re.compile(r"\bno (?:ram|memory)\b|\b(?:ram|memory) not included\b|\bwithout (?:ram|memory)\b",
+                      re.IGNORECASE),
+    "gpu": re.compile(r"\bno (?:gpu|graphics card|video card|graphics)\b|\b(?:gpu|graphics card) not included\b|"
+                      r"\bwithout (?:a |the )?(?:gpu|graphics card|video card)\b", re.IGNORECASE),
+}
+
 # Talk about what a board supports or was tested with isn't in the box. Only the text before it is kept:
 # "MSI B550 TOMAHAWK, supports Ryzen 5000 like the 5950X" -> "MSI B550 TOMAHAWK, "
 SPEC_TALK = re.compile(r"support|compatib|up to|\bmax(?:imum)?\s+(?:of\b|\d|ram|memory|capacity)|upgrade|recommend|"
@@ -85,14 +101,26 @@ def mobo_by_chipset(text):
     return None
 
 
+def cpu_models(text):
+    """Every CPU model in the text, across all families. A match inside an earlier family's match is the same chip."""
+    taken, found = [], []
+    for brand, pat, fmt in MODEL_PATTERNS:
+        for m in pat.finditer(text):
+            if any(m.start() < end and start < m.end() for start, end in taken):
+                continue  # "Xeon E5645" already covers "E5645"
+            taken.append(m.span())
+            found.append(fmt(m))
+    return list(dict.fromkeys(found))
+
+
 def find_part(part, text, allow_chipset=True):
     """Return (model, problem). model is the prices.csv name, or None if it couldn't be identified."""
     text = clean_title(part, text)
     if part == "cpu":
-        models = extract_models(text)
+        models = cpu_models(text)
         if len(models) > 1:
-            return None, f"several CPU models ({', '.join(m for _, m in models)})"
-        return (models[0][1], None) if models else (None, None)
+            return None, f"several CPU models ({', '.join(models)})"
+        return (models[0], None) if models else (None, None)
     extract = {"mobo": extract_mobo, "ram": extract_ram, "gpu": extract_gpu}[part]
     found = extract(text)
     if found:
@@ -112,7 +140,9 @@ def find_in_details(part, listing):
         found = []
         for allow_chipset in (False, True):  # a full board name beats a bare chipset
             for line in lines:
-                model, _ = find_part(part, line, allow_chipset)
+                model, line_problem = find_part(part, line, allow_chipset)
+                if line_problem:
+                    return None, f"the {label} has {line_problem}", label
                 if model and model not in found:
                     found.append(model)
             if found:
@@ -179,12 +209,19 @@ def score_listing(listing, search):
 
     quantity = 1
     lot = LOT.search(title)
-    if search["parts"] == ["cpu"] and lot and int(lot[1]) > 1:
+    # The manual search lists every part, so it's a CPU lot only if the title names no board, RAM or GPU.
+    cpu_only = search["parts"] == ["cpu"] or not any(find_part(p, title)[0] for p in ("mobo", "ram", "gpu"))
+    if lot and int(lot[1]) > 1 and cpu_only:
         quantity = int(lot[1])
         flags.append(f"Lot of {quantity}: CPU value multiplied by {quantity}. Check every chip is the same model.")
+    risky = quantity > 1  # True when a flag means the profit is a guess
 
     for part in search["parts"]:
         name = PART_NAMES[part]
+        if TITLE_EXCLUDES[part].search(title):
+            flags.append(f"Title says the {name} isn't included. Counted as $0.")
+            missing.append({"part": part, "name": name})
+            continue
         model, problem = find_part(part, title)
         price = lookup(part, model) if model else None
         source = "title"
@@ -211,8 +248,12 @@ def score_listing(listing, search):
         parts.append(make_part(part, model, price, quantity if part == "cpu" else 1, source))
         if price is None:
             flags.append(f"No price data for {name} '{model}'. Counted as $0.")
-        elif part == "mobo" and price["kind"] == "fallback" and model == price["priced_as"]:
-            flags.append(f"Board brand and model unknown, priced as an average {model} board.")
+        elif part == "mobo" and price["kind"] == "fallback":
+            risky = True
+            if model == price["priced_as"]:
+                flags.append(f"Board brand and model unknown, priced as an average {model} board.")
+            else:
+                flags.append(f"No sold data for '{model}', priced as an average {price['priced_as']} board.")
         if source != "title":
             flags.append(f"{name} '{model}' is from the {source}, not the title. Check it's included.")
         if "VRAM unknown" in model:
@@ -228,9 +269,12 @@ def score_listing(listing, search):
         flags.append(f"Description mentions '{junk[0]}'. Values assume working parts.")
     if MOBO_JUNK.search(title):
         flags.append("Title suggests parts may be damaged or untested. Values assume working parts.")
+    if junk or MOBO_JUNK.search(title):
+        risky = True
 
     shipping = listing.get("shipping")
     if shipping is None:
+        risky = True
         flags.append("Shipping cost unknown. Counted as $0.")
         shipping = 0.0
 
@@ -241,7 +285,8 @@ def score_listing(listing, search):
     parts_value = round(sum(p["value"] for p in parts), 2)
     profit = round(parts_value - cost, 2)
 
-    low = any(p["confidence"] != "high" for p in parts) or not parts
+    # Low when any price is thin, a required part is missing, or a flag means the profit is a guess.
+    low = not parts or bool(missing) or risky or any(p["confidence"] != "high" for p in parts)
     return {
         **listing,
         "search": search["name"],
