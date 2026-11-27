@@ -24,6 +24,27 @@ window.Parts = (function () {
     return (n < 0 ? "-$" : "$") + abs;
   }
 
+  // Spread bar contents: the parts value split into price, shipping, tax and what you keep.
+  // On a loss the bar is the cost, with a red tick where the parts value runs out.
+  function spread(value, price, shipping, tax, profit) {
+    const segs = [["price", price], ["shipping", shipping], ["tax", tax], ["profit", Math.max(0, profit)]]
+      .filter(s => s[1] > 0)
+      .map(([k, v]) => `<span class="seg seg-${k}" style="flex-grow:${v}"></span>`)
+      .join("");
+    const spent = price + shipping + tax;
+    const mark = profit < 0 && spent > 0
+      ? `<span class="spread-mark" style="left:${(Math.max(0, value) / spent) * 100}%"></span>`
+      : "";
+    return segs + mark;
+  }
+
+  // The verdict: an ink stamp for a buy, a check or a loss, plain text when profit is under target.
+  function stamp(profit, target, low) {
+    if (profit < 0) return `<div class="stamp pass"><b>Pass</b><span>${money(profit)}</span></div>`;
+    if (profit < target) return `<div class="r-verdict">+${money(profit)}<span>under $${target}</span></div>`;
+    return `<div class="stamp ${low ? "check" : "buy"}"><b>${low ? "Check" : "Buy"}</b><span>+${money(profit)}</span></div>`;
+  }
+
   // Shared gradients, added to the page once.
   const DEFS = `
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -186,5 +207,5 @@ window.Parts = (function () {
         </div>`).join("") + `</div>`;
   }
 
-  return { items, money, esc, safeUrl };
+  return { items, money, esc, safeUrl, spread, stamp };
 })();

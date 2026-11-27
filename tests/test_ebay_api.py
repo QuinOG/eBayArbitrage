@@ -1,3 +1,6 @@
+import os
+import tempfile
+import time
 import unittest
 from types import SimpleNamespace
 from unittest import mock
@@ -76,3 +79,27 @@ class RetryTest(unittest.TestCase):
 
         self.assertEqual(self.request.call_count, 3)
         self.assertEqual(self.sleep.call_args_list, [mock.call(3), mock.call(6)])
+
+
+class CacheTest(unittest.TestCase):
+    def test_search_does_not_cache_results(self):
+        ok = SimpleNamespace(status_code=200, headers={}, json=lambda: {"itemSummaries": []})
+        with mock.patch("ebay_api.requests.request", return_value=ok) as request, mock.patch(
+            "ebay_api.get_ebay_oauth_token", return_value="t"
+        ):
+            ebay_api.search_listings("164")
+            ebay_api.search_listings("164")
+
+        self.assertEqual(request.call_count, 2)
+
+    def test_save_details_cache_drops_stale_entries(self):
+        now = time.time()
+        entries = {
+            "fresh": (now, {"specifics": [], "description": []}),
+            "stale": (0, {"specifics": [], "description": []}),
+        }
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(
+            ebay_api, "DETAILS_CACHE_FILE", os.path.join(tmp, "details_cache.json")
+        ), mock.patch.dict(ebay_api.DETAILS_CACHE, entries, clear=True):
+            ebay_api.save_details_cache()
+            self.assertEqual(set(ebay_api.DETAILS_CACHE), {"fresh"})

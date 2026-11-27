@@ -3,7 +3,7 @@
 // recalculated in the browser as you edit values, add parts, or change the price.
 
 document.addEventListener("DOMContentLoaded", function () {
-  const { esc, safeUrl, money } = window.Parts;
+  const { esc, safeUrl, money, spread, stamp } = window.Parts;
   const linkForm = document.getElementById("link_form");
   const manualForm = document.getElementById("manual_form");
   const titleBox = document.getElementById("title");
@@ -228,20 +228,6 @@ document.addEventListener("DOMContentLoaded", function () {
     recalc();
   }
 
-  // Spread bar: the parts value split into price, shipping, tax and what you keep.
-  // On a loss the bar is the cost, with a red tick where the parts value runs out.
-  function drawSpread(value, price, shipping, tax, profit) {
-    const segs = [["price", price], ["shipping", shipping], ["tax", tax], ["profit", Math.max(0, profit)]]
-      .filter(s => s[1] > 0)
-      .map(([k, v]) => `<span class="seg seg-${k}" style="flex-grow:${v}"></span>`)
-      .join("");
-    const spent = price + shipping + tax;
-    const mark = profit < 0 && spent > 0
-      ? `<span class="spread-mark" style="left:${(Math.max(0, value) / spent) * 100}%"></span>`
-      : "";
-    result.querySelector("#spread").innerHTML = segs + mark;
-  }
-
   function recalc() {
     const value = [...result.querySelectorAll("#part_rows .value")].reduce((sum, input) => sum + num(input), 0);
     const price = num(result.querySelector("#r_price"));
@@ -261,12 +247,8 @@ document.addEventListener("DOMContentLoaded", function () {
     profitCell.textContent = money(profit);
     profitCell.className = "num " + (profit >= target ? "good" : "bad");
     result.classList.toggle("no-deal-card", profit < target);
-    result.querySelector("#stamp").outerHTML = profit < 0
-      ? `<div id="stamp" class="stamp pass"><b>Pass</b><span>${money(profit)}</span></div>`
-      : profit >= target
-        ? `<div id="stamp" class="stamp ${lowConfidence ? "check" : "buy"}"><b>${lowConfidence ? "Check" : "Buy"}</b><span>+${money(profit)}</span></div>`
-        : `<div id="stamp" class="r-verdict">+${money(profit)}<span>under $${target}</span></div>`;
-    drawSpread(value, price, shipping, tax, profit);
+    result.querySelector("#stamp").outerHTML = stamp(profit, target, lowConfidence).replace("<div ", '<div id="stamp" ');
+    result.querySelector("#spread").innerHTML = spread(value, price, shipping, tax, profit);
     result.querySelector("#max_price").textContent = maxPrice > 0
       ? money(Math.floor(maxPrice * 100) / 100)
       : "nothing works, parts are worth less than shipping plus target";

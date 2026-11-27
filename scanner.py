@@ -25,7 +25,8 @@ MANUAL_SEARCH = {"name": "Manual", "parts": ["cpu", "mobo", "ram", "gpu"], "requ
 # --- What kind of listing it is ---
 
 # "Lot of 3", "(LOT OF 3)", "5 pcs": several of the same item
-LOT = re.compile(r"\blot\s*(?:of\s*)?(\d+)\b|\b(\d+)\s*(?:pcs|pieces)\b", re.IGNORECASE)
+LOT = re.compile(r"\blot\s*(?:of\s*)?(\d+)\b|\b(\d+)\s*(?:pcs|pieces)\b|\bx\s?([2-9])\b(?!\s*(?:fans?|gb|tb|mb|monitors?|displays?)\b)",
+                 re.IGNORECASE)
 # An empty box, a cooler or a bracket listed under a part's name. These are valued at $0, or
 # "EMPTY BOX - RTX 5080" would be scored as a $1,800 card.
 ACCESSORY = re.compile(
@@ -36,6 +37,9 @@ ACCESSORY = re.compile(
     r"(?:for|fits|compatible)\b|\breplacement\s+(?:fans?|coolers?|shroud)\b|"
     # "Wraith Prism Cooler for Ryzen 7", but not "Ryzen 7 5800X with cooler for sale"
     r"^\D{0,50}?\bcoolers?\s+(?:for|fits|compatible)\b|"
+    # "i9-13900K Contact Frame for LGA1700", but "i9-9900K delidded" or "with contact frame" is still a CPU
+    r"\b(?:contact\s*frame|socket\s*(?:cover|protector)s?|mount(?:ing)?\s*kit)\s+(?:for|fits|compatible)\b|"
+    r"\bdelid\s*(?:tool|kit)s?\b|"
     r"\b(?:support|sag|anti[- ]sag)\s+(?:bracket|brace|stand)\b|\bdummy\b|\bdisplay\s+model\b", re.IGNORECASE)
 # A combo or bundle listed in a single-part category, like a CPU with a board in the CPU category.
 BUNDLE = re.compile(r"\b(?:combo|bundle)\b|(?:w/|with|\+|&|\band\b)\s*(?:an?\s+)?(?:\w+\s+){0,2}(?:motherboard|mobo)\b",
@@ -489,7 +493,7 @@ def listing_kind(title, search):
         parts = list(PART_NAMES)
         flags.append(f"Bundle in the {search['name']} search: every part in it was priced.")
     lot = LOT.search(title)
-    quantity = int(lot[1] or lot[2]) if lot else 1
+    quantity = int(next(g for g in lot.groups() if g)) if lot else 1
     # "Lot of 2 i5-8500 + MSI B450" doesn't say what the 2 applies to, so only a lot of one kind of part counts.
     if quantity > 1 and sum(1 for p in parts if find_part(p, title)[0]) > 1:
         flags.append(f"Title says {quantity} pieces but names several parts. Values not multiplied, check the count.")
