@@ -22,3 +22,10 @@ Two jobs:
    the exact model names used in prices.csv. The scanner should import these, not rewrite them, so names always match.
 
 Refresh every 1–2 weeks.
+
+## Faster refresh: collect_sold.py
+From the repo root, run `python collect_sold.py` (or `python collect_sold.py gpu ram` for some parts).
+It opens each sold-search page in your browser (used, newest first, 240 per page). Press Ctrl+A, then Ctrl+C,
+and it saves the page to `data/raw/<part>/`, opens the next one, and moves on once it reaches sales older than
+30 days (`--days` changes that). Then it runs this parser on every saved page and rebuilds prices.csv, keeping a backup.
+A part with no saved pages keeps its old rows. `python collect_sold.py --build-only` rebuilds without collecting.

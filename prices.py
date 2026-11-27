@@ -12,6 +12,7 @@ Lookup order (see data/README.md):
 
 import csv
 import os
+import re
 
 from data.sold_parser import CHIPSET
 
@@ -35,28 +36,40 @@ def load_prices(path=PRICES_FILE):
 PRICES = load_prices()
 
 
-def fallback_model(part, model):
-    """The name of the backup price row for a model, or None if that part has no backup."""
+def fallback_models(part, model):
+    """The names of the backup price rows for a model, best first. Empty if that part has no backup."""
     if part == "mobo":
         # "MSI B450 TOMAHAWK MAX" -> "B450". Same steps sold_parser.py uses to build the chipset rows.
-        for word in model.split()[1:]:
+        # "Gigabyte Z270MX" -> "Z270MX", then "Z270M", then "Z270" (not every suffix has its own row).
+        words = model.split()
+        for word in words[1:] or words:
             m = CHIPSET.match(word)
             if m:
-                return m.group(1)
-        return None
+                chip = m.group(1)
+                base = re.match(r"[A-Z]*\d+", chip)[0]
+                return list(dict.fromkeys([chip, chip[:len(base) + 1], base]))
+        return []
     if part == "ram":
         # "DDR4 Desktop 16GB (2x8GB) 3200" -> "DDR4 Desktop 16GB"
-        return " ".join(model.split()[:3])
-    return None
+        return [" ".join(model.split()[:3])]
+    return []
 
 
 def lookup(part, model):
     """Return {"value", "sales", "confidence", "kind", "priced_as"} or None if there's no data."""
+    if part == "gpu" and model.endswith(" (VRAM unknown)"):
+        # "RTX 3060 (VRAM unknown)": price it as the cheapest memory size that card came in.
+        # This comes before the "(VRAM unknown)" row itself, which mixes sales of every size.
+        base = model.replace(" (VRAM unknown)", "")
+        rows = [(r["value"], name, r) for (p, name), r in PRICES.items()
+                if p == "gpu" and re.fullmatch(re.escape(base) + r" \d+GB", name)]
+        if rows:
+            _, name, row = min(rows, key=lambda x: x[0])
+            return {**row, "kind": "fallback", "confidence": "low", "priced_as": name}
     row = PRICES.get((part, model))
     if row:
         return {**row, "priced_as": model}
-    backup = fallback_model(part, model)
-    if backup:
+    for backup in fallback_models(part, model):
         row = PRICES.get((part, backup))
         if row:
             return {**row, "priced_as": backup}

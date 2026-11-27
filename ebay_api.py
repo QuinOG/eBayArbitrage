@@ -3,12 +3,15 @@ Talks to eBay's official APIs. No scraping.
 
 - get_ebay_oauth_token(): app token from EBAY_CLIENT_ID / EBAY_CLIENT_SECRET (set in .env)
 - search_listings(category_id): newest listings in a category, from the Browse API
+- get_details(item_id): one listing's item specifics and description, cached in data/details_cache.json
 """
 
 import base64
 import html
+import json
 import os
 import re
+import threading
 import time
 from datetime import datetime, timezone, timedelta
 
@@ -120,7 +123,9 @@ def get_shipping(item):
 def parse_item(item):
     created_str = item.get("itemCreationDate", "")
     created = datetime.fromisoformat(created_str.replace("Z", "+00:00")) if created_str else None
+    item_id = item.get("legacyItemId") or (item.get("itemId", "").split("|") + ["", ""])[1]
     return {
+        "item_id": item_id,
         "title": item.get("title", ""),
         "price": float(item.get("price", {}).get("value", 0)),
         "shipping": get_shipping(item),
@@ -160,6 +165,60 @@ def get_item(link_or_number):
     return listing
 
 
+# Item specifics and descriptions fetched during scans, by item number. A listing's description rarely
+# changes, so each one costs 1 API call the first time it's scanned and nothing on later refreshes.
+# The cache is saved to data/details_cache.json, so restarting app.py doesn't fetch everything again.
+DETAILS_CACHE_HOURS = 12
+DETAILS_CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "details_cache.json")
+
+
+def fresh(entries):
+    """Only the cache entries younger than DETAILS_CACHE_HOURS."""
+    cutoff = time.time() - DETAILS_CACHE_HOURS * 3600
+    return {k: v for k, v in entries.items() if v[0] > cutoff}
+
+
+def load_details_cache():
+    try:
+        with open(DETAILS_CACHE_FILE, encoding="utf-8") as f:
+            return fresh(json.load(f))
+    except (OSError, ValueError):  # no file yet, or a broken one
+        return {}
+
+
+DETAILS_CACHE = load_details_cache()
+DETAILS_LOCK = threading.Lock()  # scans fetch details from several threads at once
+
+
+def save_details_cache():
+    """Write the cache to disk. scan_all() calls this after each scan."""
+    with DETAILS_LOCK:
+        entries = fresh(DETAILS_CACHE)
+    try:
+        with open(DETAILS_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump(entries, f)
+    except OSError as e:
+        if DEBUG:
+            print(f"Couldn't save {DETAILS_CACHE_FILE}: {e}")
+
+
+def get_details(item_id):
+    """{"specifics": [...], "description": [...]} for one listing, cached. Empty lists if it can't be loaded."""
+    cached = DETAILS_CACHE.get(item_id)
+    if cached and time.time() - cached[0] < DETAILS_CACHE_HOURS * 3600:
+        return cached[1]
+    try:
+        item = get_item(item_id)
+        details = {"specifics": item["specifics"], "description": item["description"]}
+    except Exception as e:
+        if DEBUG:
+            print(f"Couldn't load details for {item_id}: {e}")
+        return {"specifics": [], "description": []}  # not cached, so the next scan tries again
+    with DETAILS_LOCK:
+        DETAILS_CACHE[item_id] = (time.time(), details)
+    return details
+
+
 def specifics_lines(aspects):
     """Item specifics as "Name: value" lines, plus a few combined lines the part finders can read."""
     values = {a.get("name", ""): a.get("value", "") for a in aspects}
@@ -183,8 +242,17 @@ def html_to_lines(html_text):
     return [line for line in lines if line][:300]
 
 
+# Search results, by category, for SEARCH_CACHE_SECONDS. Refreshing the page a few times in a row
+# reuses them instead of spending 1 API call per search each time.
+SEARCH_CACHE = {}
+SEARCH_CACHE_SECONDS = 90
+
+
 def search_listings(category_id):
     """Newest fixed-price listings in one category, no older than config.MAX_LISTING_AGE_HOURS."""
+    cached = SEARCH_CACHE.get(category_id)
+    if cached and time.time() - cached[0] < SEARCH_CACHE_SECONDS:
+        return [dict(l) for l in cached[1]]
     filters = [
         "buyingOptions:{FIXED_PRICE}",   # auctions show the current bid, not the final price
         f"conditionIds:{{{CONDITION_IDS}}}",
@@ -213,4 +281,5 @@ def search_listings(category_id):
         listings.append(listing)
     if DEBUG:
         print(f"Category {category_id}: {len(listings)} listings from the last {config.MAX_LISTING_AGE_HOURS} hours")
-    return listings
+    SEARCH_CACHE[category_id] = (time.time(), listings)
+    return [dict(l) for l in listings]

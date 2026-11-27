@@ -256,11 +256,15 @@ button, select, input, textarea { font: inherit; color: var(--text); }
 /* Hero: the scan in a sentence, and  */
 /* the best flip laid out on a bench  */
 /* ---------------------------------- */
+/* Summary: one line of result, the scan details on the right */
 .hero {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  gap: 40px;
-  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
 }
 
 .eyebrow {
@@ -271,23 +275,29 @@ button, select, input, textarea { font: inherit; color: var(--text); }
 }
 
 .hero h1 {
-  margin-top: 16px;
-  font-size: 44px;
-  line-height: 48px;
+  font-size: 28px;
+  line-height: 36px;
   font-weight: 400;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   text-wrap: balance;
 }
 
-.hero h1 .n { font-family: var(--mono); font-weight: 500; letter-spacing: -0.04em; }
+.hero h1 .n { font-family: var(--mono); font-weight: 500; letter-spacing: -0.02em; }
 
 .hero-sub {
-  margin-top: 16px;
-  max-width: 34rem;
-  font-size: 17px;
-  line-height: 26px;
+  margin-top: 4px;
+  font-size: 15px;
+  line-height: 24px;
   color: var(--text-2);
   text-wrap: pretty;
+}
+
+.deals-count {
+  margin-top: 24px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-3);
 }
 
 .hero-sub .n { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--text); }
@@ -435,6 +445,7 @@ button, select, input, textarea { font: inherit; color: var(--text); }
 }
 
 .chart-panel { margin-top: 48px; padding: 20px 24px 16px; }
+.chart-panel .chart { height: 260px; }
 
 .panel-head {
   display: flex;
@@ -522,7 +533,7 @@ button, select, input, textarea { font: inherit; color: var(--text); }
 .section-head p { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
 
 .container {
-  margin-top: 16px;
+  margin-top: 24px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 28px 24px;
@@ -677,6 +688,41 @@ button, select, input, textarea { font: inherit; color: var(--text); }
 
 .flags li { position: relative; padding-left: 16px; }
 
+/* Folded notes on scanner receipts */
+.notes { margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line-strong); }
+.notes .flags { margin-top: 8px; padding-top: 0; border-top: none; }
+
+.notes summary, .manual summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  font-size: 13px;
+  color: var(--text-2);
+  cursor: pointer;
+  list-style: none;
+  transition: color 150ms var(--ease);
+}
+
+.notes summary::-webkit-details-marker, .manual summary::-webkit-details-marker { display: none; }
+.notes summary:hover, .manual summary:hover { color: var(--text); }
+
+/* A small chevron that turns when open */
+.notes summary::before, .manual summary::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin: 0 2px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 150ms var(--ease);
+}
+
+.notes[open] summary::before, .manual[open] summary::before { transform: rotate(45deg); }
+
+.low-card .notes summary { color: var(--amber); }
+
 .flags li::before {
   content: "";
   position: absolute;
@@ -738,18 +784,36 @@ footer {
 /* ---------------------------------- */
 /* Evaluate a listing                 */
 /* ---------------------------------- */
-.eval-page { max-width: 800px; display: flex; flex-direction: column; gap: 32px; }
+.eval-page { max-width: 800px; display: flex; flex-direction: column; gap: 24px; }
 
 .eval-form { padding: 24px; }
 .eval-form h1 { font-size: 28px; line-height: 36px; font-weight: 400; letter-spacing: -0.01em; }
 
 .eval-row { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; margin-top: 16px; }
 .eval-page label { display: block; color: var(--text-2); font-size: 13px; }
+.eval-page button:disabled { opacity: 0.6; cursor: progress; }
+
+.manual { margin-top: 16px; }
+.manual form { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+.manual form .eval-row { margin-top: 0; }
+.eval-page label .hint { display: inline; margin-left: 4px; }
 .eval-row label { display: flex; flex-direction: column; gap: 4px; }
 #link { flex: 1; min-width: 200px; }
 #price, #shipping { width: 120px; font-family: var(--mono); }
 
 .hint { display: block; font-size: 12px; color: var(--text-3); }
+.loaded-note { display: flex; align-items: center; gap: 8px; }
+.eval-page .text-button {
+  height: auto;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-2);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.eval-page .text-button:hover { color: var(--text); background: none; }
 
 .eval-page textarea { display: block; width: 100%; height: auto; margin-top: 4px; padding: 8px; resize: vertical; }
 
@@ -769,7 +833,6 @@ footer {
 .eval-page button[type="submit"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 .eval-page button[type="submit"]:hover { background: var(--ink-hover); border-color: var(--ink-hover); }
 
-.or { margin: 24px 0 8px; padding-top: 16px; border-top: 1px dashed var(--line-strong); color: var(--text-3); font-size: 13px; }
 #error:not(:empty) { margin-top: 12px; }
 
 .eval-bench { min-height: 0; }
@@ -819,16 +882,12 @@ footer {
 /* ---------------------------------- */
 /* Narrow screens                     */
 /* ---------------------------------- */
-@media (max-width: 1080px) {
-  .hero { grid-template-columns: 1fr; gap: 32px; }
-  .hero h1 { font-size: 40px; line-height: 44px; }
-}
 
 @media (max-width: 640px) {
   .header-top, .toolbar, .page { padding-left: 16px; padding-right: 16px; }
   .page { padding-top: 24px; }
   .toolbar-bar { position: static; }
-  .hero h1 { font-size: 36px; line-height: 40px; }
+  .hero h1 { font-size: 24px; line-height: 32px; }
   .bench { padding: 16px; }
   .bench-row { flex-wrap: wrap; gap: 20px; }
   .container { grid-template-columns: 1fr; }

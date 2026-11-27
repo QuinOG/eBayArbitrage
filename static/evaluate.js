@@ -14,19 +14,34 @@ document.addEventListener("DOMContentLoaded", function () {
   const result = document.getElementById("result");
   const bench = document.getElementById("bench");
 
+  const loadedNote = document.getElementById("loaded_note");
+
   let taxRate = 0;
   let taxOnShipping = true;
   let lowConfidence = false;
+  // The item specifics, link and condition of the listing loaded from eBay. The form only
+  // holds the title and description, so these are sent again when you press Evaluate.
+  let loaded = null;
+
+  function setLoaded(listing) {
+    loaded = listing ? { specifics: listing.specifics || [], listing_url: listing.listing_url,
+                         condition: listing.condition } : null;
+    const count = loaded ? loaded.specifics.length : 0;
+    loadedNote.hidden = !count;
+    loadedNote.querySelector("span").textContent =
+      `Also uses the ${count} item specifics from the loaded listing.`;
+  }
 
   function num(input) {
     const n = parseFloat(input.value);
     return isNaN(n) ? 0 : n;
   }
 
-  async function evaluate(body) {
+  async function evaluate(body, button) {
     errorBox.textContent = "";
-    result.style.display = "none";
-    bench.hidden = true;
+    const label = button.textContent;
+    button.disabled = true;
+    button.textContent = body.link ? "Loading" : "Evaluating";
     try {
       const response = await fetch("/api/evaluate", {
         method: "POST",
@@ -36,11 +51,14 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = await response.json();
       if (!response.ok) {
         errorBox.textContent = data.error;
+        result.style.display = "none";
+        bench.hidden = true;
         return;
       }
       taxRate = data.sales_tax_rate;
       taxOnShipping = data.tax_on_shipping;
       const d = data.listing;
+      if (body.link) setLoaded(d);
       // Copy the listing into the form, so you can edit the title and evaluate again.
       titleBox.value = d.title;
       descriptionBox.value = (d.description || []).join("\n");
@@ -50,6 +68,9 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (err) {
       console.error(err);
       errorBox.textContent = "Something went wrong. Check the terminal running app.py.";
+    } finally {
+      button.disabled = false;
+      button.textContent = label;
     }
   }
 
@@ -161,9 +182,9 @@ document.addEventListener("DOMContentLoaded", function () {
       <div class="spread" id="spread" aria-hidden="true"></div>
       <table class="parts">
         <tbody id="part_rows">${rows.join("")}</tbody>
-        <tr><td colspan="4"><button type="button" id="add_part">Add part: GPU, cooler, PSU, storage...</button></td></tr>
+        <tr><td colspan="4"><button type="button" id="add_part">Add part</button></td></tr>
         <tr class="total"><td colspan="2">Parts value</td><td class="num" id="parts_value"></td><td></td></tr>
-        <tr><td colspan="2"><i class="sw seg-price"></i>Price, try an offer</td>
+        <tr><td colspan="2"><i class="sw seg-price"></i>Price</td>
             <td class="num"><input id="r_price" type="number" step="0.01" value="${d.price.toFixed(2)}"></td><td></td></tr>
         <tr><td colspan="2"><i class="sw seg-shipping"></i>Shipping</td>
             <td class="num"><input id="r_shipping" type="number" step="0.01" value="${d.shipping.toFixed(2)}"></td><td></td></tr>
@@ -182,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const drawn = d.parts.filter(p => p.model);
     bench.hidden = !drawn.length;
     bench.innerHTML = drawn.length
-      ? `<figcaption class="bench-caption"><span>Parts found in the listing</span></figcaption>
+      ? `<figcaption class="bench-caption"><span>Parts found</span></figcaption>
          <div class="bench-items">${window.Parts.items(drawn)}</div>`
       : "";
 
@@ -256,11 +277,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   linkForm.addEventListener("submit", e => {
     e.preventDefault();
-    evaluate({ link: document.getElementById("link").value });
+    evaluate({ link: document.getElementById("link").value }, linkForm.querySelector("button"));
   });
 
   manualForm.addEventListener("submit", e => {
     e.preventDefault();
-    evaluate({ title: titleBox.value, description: descriptionBox.value, price: priceBox.value, shipping: shippingBox.value });
+    evaluate({ ...loaded, title: titleBox.value, description: descriptionBox.value,
+               price: priceBox.value, shipping: shippingBox.value },
+             manualForm.querySelector("button[type=submit]"));
   });
+
+  document.getElementById("drop_loaded").addEventListener("click", () => setLoaded(null));
 });

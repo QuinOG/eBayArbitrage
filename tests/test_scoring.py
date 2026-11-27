@@ -151,17 +151,23 @@ class ScoringTest(unittest.TestCase):
         self.assertTrue(any(f"{name} isn't included" in flag for flag in result["flags"]))
         self.assertEqual(result["confidence"], "low")
 
+    def assert_accessory(self, result):
+        """Boxes and coolers sold on their own are caught before any part is priced."""
+        self.assertEqual(result["parts"], [])
+        self.assertTrue(any("accessory or an empty box" in flag for flag in result["flags"]))
+        self.assertEqual(result["confidence"], "low")
+
     def test_box_only_no_cpu(self):
         result = self.score("CPU", "Intel Core i7-8700 box only no CPU", 40, 0)
-        self.assert_title_excludes(result, "cpu", "CPU")
+        self.assert_accessory(result)
 
     def test_empty_cpu_box(self):
         result = self.score("CPU", "Intel Core i7-8700 Empty Box", 40, 0)
-        self.assert_title_excludes(result, "cpu", "CPU")
+        self.assert_accessory(result)
 
     def test_cpu_cooler_only(self):
         result = self.score("CPU", "Intel Core i7-8700 cooler only", 40, 0)
-        self.assert_title_excludes(result, "cpu", "CPU")
+        self.assert_accessory(result)
 
     def test_combo_no_ram(self):
         result = self.score("Combo", "MSI B450 TOMAHAWK MAX + Ryzen 5 3600 Combo, no RAM", 40, 0)

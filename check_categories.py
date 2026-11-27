@@ -19,6 +19,7 @@ SUGGESTION_QUERIES = {
     "CPU": "intel core i7 cpu processor",
     "Combo": "motherboard cpu combo",
     "Desktop": "gaming desktop pc computer",
+    "GPU": "nvidia rtx 3060 graphics card",
 }
 
 

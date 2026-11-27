@@ -239,7 +239,9 @@ def money(s):
 
 
 def parse_file(path):
-    lines = [l.strip() for l in open(path, encoding="utf-8", errors="ignore")]
+    # eBay titles can hold invisible marks (‎ and similar). Drop them so titles match and CSVs save.
+    lines = [re.sub(r"[​-‏⁠﻿]", "", l).strip()
+             for l in open(path, encoding="utf-8", errors="ignore")]
     sales = []
     for i, line in enumerate(lines):
         m = re.match(r"^Sold ([A-Z][a-z]{2} \d{1,2}, \d{4})$", line)
