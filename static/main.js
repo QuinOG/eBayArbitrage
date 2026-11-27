@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async function () {
   const $ = id => document.getElementById(id);
-  const { esc, money, safeUrl } = window.Parts;
+  const { esc, money, safeUrl, spread, stamp } = window.Parts;
   const loadingScreen = $("loading");
   const hero = $("hero");
   const overview = $("overview");
@@ -41,20 +41,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   // Receipts
   // ------------------------------------------------------------------
 
-  // Spread bar: the parts value split into price, shipping, tax and what you keep.
-  // On a loss the bar is the cost, with a red tick where the parts value runs out.
-  function spreadBar(d) {
-    const segs = [["price", d.price], ["shipping", d.shipping], ["tax", d.tax], ["profit", Math.max(0, d.profit)]]
-      .filter(s => s[1] > 0)
-      .map(([k, v]) => `<span class="seg seg-${k}" style="flex-grow:${v}"></span>`)
-      .join("");
-    const spent = allIn(d);
-    const mark = d.profit < 0 && spent > 0
-      ? `<span class="spread-mark" style="left:${(d.parts_value / spent) * 100}%"></span>`
-      : "";
-    return `<div class="spread" aria-hidden="true">${segs}${mark}</div>`;
-  }
-
   function line(label, value, cls = "", sw = "") {
     return `
       <li class="${cls}">
@@ -75,14 +61,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         <span class="l-dots"></span>
         <span class="l-val">${money(p.value)}</span>
       </li>`;
-  }
-
-  // The verdict in the corner: an ink stamp for a buy, a check or a loss, plain text otherwise.
-  function verdict(d) {
-    if (d.profit < 0) return `<div class="stamp pass"><b>Pass</b><span>${money(d.profit)}</span></div>`;
-    if (!isDeal(d)) return `<div class="r-verdict">+${money(d.profit)}<span>under $${dealMin()}</span></div>`;
-    const low = d.confidence === "low";
-    return `<div class="stamp ${low ? "check" : "buy"}"><b>${low ? "Check" : "Buy"}</b><span>+${money(d.profit)}</span></div>`;
   }
 
   function createCard(d) {
@@ -106,11 +84,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     wrap.innerHTML = `
       <article class="${cls}" id="deal-${d._key}" data-key="${d._key}">
         <div class="r-head">
-          ${verdict(d)}
+          ${stamp(d.profit, dealMin(), d.confidence === "low")}
           <p class="r-meta">${meta}</p>
           <h2><a href="${safeUrl(d.listing_url)}" target="_blank" rel="noopener">${esc(d.title)}</a></h2>
         </div>
-        ${spreadBar(d)}
+        <div class="spread" aria-hidden="true">${spread(d.parts_value, d.price, d.shipping, d.tax, d.profit)}</div>
         <ul class="lines">
           ${parts}
           ${line("Parts value", money(d.parts_value), "sub")}

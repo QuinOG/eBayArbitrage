@@ -19,7 +19,6 @@ import requests
 
 import config
 
-DEBUG = True
 BROWSE_URL = "https://api.ebay.com/buy/browse/v1/item_summary/search"
 ITEM_URL = "https://api.ebay.com/buy/browse/v1/item/get_item_by_legacy_id"
 TOKEN_URL = "https://api.ebay.com/identity/v1/oauth2/token"
@@ -49,11 +48,9 @@ def request_with_retry(method, url, max_attempts=3, delay=3, **kwargs):
                 if retry_after.isdecimal():
                     wait = min(int(retry_after), 10)
         if attempt == max_attempts - 1:
-            if DEBUG:
-                print(f"Attempt {attempt + 1}: {reason}")
+            print(f"Attempt {attempt + 1}: {reason}")
             break
-        if DEBUG:
-            print(f"Attempt {attempt + 1}: {reason}, retrying in {wait}s")
+        print(f"Attempt {attempt + 1}: {reason}, retrying in {wait}s")
         time.sleep(wait)
         delay *= 2
     if response is None:
@@ -193,13 +190,14 @@ DETAILS_LOCK = threading.Lock()  # scans fetch details from several threads at o
 def save_details_cache():
     """Write the cache to disk. scan_all() calls this after each scan."""
     with DETAILS_LOCK:
-        entries = fresh(DETAILS_CACHE)
+        for key in DETAILS_CACHE.keys() - fresh(DETAILS_CACHE).keys():
+            del DETAILS_CACHE[key]  # drop stale entries so memory doesn't grow forever
+        entries = dict(DETAILS_CACHE)
     try:
         with open(DETAILS_CACHE_FILE, "w", encoding="utf-8") as f:
             json.dump(entries, f)
     except OSError as e:
-        if DEBUG:
-            print(f"Couldn't save {DETAILS_CACHE_FILE}: {e}")
+        print(f"Couldn't save {DETAILS_CACHE_FILE}: {e}")
 
 
 def get_details(item_id):
@@ -211,8 +209,7 @@ def get_details(item_id):
         item = get_item(item_id)
         details = {"specifics": item["specifics"], "description": item["description"]}
     except Exception as e:
-        if DEBUG:
-            print(f"Couldn't load details for {item_id}: {e}")
+        print(f"Couldn't load details for {item_id}: {e}")
         return {"specifics": [], "description": []}  # not cached, so the next scan tries again
     with DETAILS_LOCK:
         DETAILS_CACHE[item_id] = (time.time(), details)
@@ -242,17 +239,8 @@ def html_to_lines(html_text):
     return [line for line in lines if line][:300]
 
 
-# Search results, by category, for SEARCH_CACHE_SECONDS. Refreshing the page a few times in a row
-# reuses them instead of spending 1 API call per search each time.
-SEARCH_CACHE = {}
-SEARCH_CACHE_SECONDS = 90
-
-
 def search_listings(category_id):
     """Newest fixed-price listings in one category, no older than config.MAX_LISTING_AGE_HOURS."""
-    cached = SEARCH_CACHE.get(category_id)
-    if cached and time.time() - cached[0] < SEARCH_CACHE_SECONDS:
-        return [dict(l) for l in cached[1]]
     filters = [
         "buyingOptions:{FIXED_PRICE}",   # auctions show the current bid, not the final price
         f"conditionIds:{{{CONDITION_IDS}}}",
@@ -279,7 +267,5 @@ def search_listings(category_id):
         if created and created < cutoff:
             continue
         listings.append(listing)
-    if DEBUG:
-        print(f"Category {category_id}: {len(listings)} listings from the last {config.MAX_LISTING_AGE_HOURS} hours")
-    SEARCH_CACHE[category_id] = (time.time(), listings)
-    return [dict(l) for l in listings]
+    print(f"Category {category_id}: {len(listings)} listings from the last {config.MAX_LISTING_AGE_HOURS} hours")
+    return listings

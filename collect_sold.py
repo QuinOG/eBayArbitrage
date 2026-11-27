@@ -171,24 +171,24 @@ def collect_part(clip, part, days, start_page, max_pages):
 
 def build_prices(parts):
     """Run sold_parser.py on every saved page, then merge the tables into prices.csv."""
-    os.chdir(DATA_DIR)  # sold_parser.py writes its tables to the current folder
-    if os.path.exists("prices.csv"):
+    prices = sold_parser.data_path("prices.csv")
+    if os.path.exists(prices):
         backup = f"prices_backup_{date.today()}.csv"
-        shutil.copy("prices.csv", backup)
+        shutil.copy(prices, sold_parser.data_path(backup))
         print(f"\nBacked up the old prices.csv to data/{backup}")
     for part in parts:
-        folder = os.path.join("raw", part)
+        folder = os.path.join(RAW_DIR, part)
         files = sorted(os.path.join(folder, f) for f in os.listdir(folder)
                        if f.endswith(".txt")) if os.path.isdir(folder) else []
         print(f"\n== Building {part} prices from {len(files)} saved page(s)")
         if not files:
             print(f"  No saved pages in data/raw/{part}/. Keeping the {part} rows from the old prices.csv.")
-            if os.path.exists(f"{part}_price_table.csv"):
-                os.remove(f"{part}_price_table.csv")  # with no table, combine() keeps the old rows
-            if part == "mobo" and os.path.exists("mobo_chipset_table.csv"):
-                os.remove("mobo_chipset_table.csv")
-            if part == "ram" and os.path.exists("ram_capacity_table.csv"):
-                os.remove("ram_capacity_table.csv")
+            tables = [f"{part}_price_table.csv"]
+            if part in sold_parser.FALLBACK_TABLES:
+                tables.append(sold_parser.FALLBACK_TABLES[part][0])
+            for table in tables:  # with no table, combine() keeps the old rows
+                if os.path.exists(sold_parser.data_path(table)):
+                    os.remove(sold_parser.data_path(table))
             continue
         sold_parser.main(files, part)
     print()

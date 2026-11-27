@@ -161,6 +161,25 @@ class ScoringTest(unittest.TestCase):
         result = self.score("CPU", "Intel Core i7-8700 box only no CPU", 40, 0)
         self.assert_accessory(result)
 
+    def test_contact_frame_is_accessory(self):
+        result = self.score("CPU", "Intel Core i9-13900K Contact Frame for LGA1700", 10, 0)
+        self.assert_accessory(result)
+        self.assertEqual(result["parts_value"], 0)
+
+    def test_delidded_cpu_still_valued(self):
+        result = self.score("CPU", "Intel Core i7-8700 delidded with contact frame", 40, 0)
+        self.assertEqual(result["parts_value"], 60.0)
+
+    def test_x2_is_a_lot(self):
+        single = self.score("CPU", "Intel Core i5-8500 3.0GHz LGA1151 CPU", 40, 0)
+        pair = self.score("CPU", "Intel Core i5-8500 3.0GHz LGA1151 CPU x2", 40, 0)
+        self.assertEqual(pair["parts_value"], single["parts_value"] * 2)
+        self.assertTrue(any("Lot of 2" in flag for flag in pair["flags"]))
+
+    def test_2x_gpu_name_is_not_a_lot(self):
+        result = self.score("GPU", "MSI GeForce RTX 3060 Ventus 2X 12G", 200, 0)
+        self.assertFalse(any("Lot of" in flag for flag in result["flags"]))
+
     def test_empty_cpu_box(self):
         result = self.score("CPU", "Intel Core i7-8700 Empty Box", 40, 0)
         self.assert_accessory(result)
