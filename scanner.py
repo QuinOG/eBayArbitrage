@@ -209,7 +209,9 @@ def score_listing(listing, search):
 
     quantity = 1
     lot = LOT.search(title)
-    if search["parts"] == ["cpu"] and lot and int(lot[1]) > 1:
+    # The manual search lists every part, so it's a CPU lot only if the title names no board, RAM or GPU.
+    cpu_only = search["parts"] == ["cpu"] or not any(find_part(p, title)[0] for p in ("mobo", "ram", "gpu"))
+    if lot and int(lot[1]) > 1 and cpu_only:
         quantity = int(lot[1])
         flags.append(f"Lot of {quantity}: CPU value multiplied by {quantity}. Check every chip is the same model.")
     risky = quantity > 1  # True when a flag means the profit is a guess

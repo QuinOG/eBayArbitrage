@@ -59,6 +59,21 @@ class ScoringTest(unittest.TestCase):
         self.assertEqual(result["parts_value"], 150.0)
         self.assertTrue(any("Lot of 5" in flag for flag in result["flags"]))
 
+    def test_manual_cpu_lot_multiplier(self):
+        listing = {"title": "Lot of 5 Intel Core i5-8500 3.0GHz SR3XE LGA1151 CPU", "price": 99, "shipping": 8.5}
+        result = scanner.score_listing(listing, scanner.MANUAL_SEARCH)
+        cpu = next(part for part in result["parts"] if part["part"] == "cpu")
+        self.assertEqual(cpu["value"], 150.0)
+        self.assertTrue(any("Lot of 5" in flag for flag in result["flags"]))
+        self.assertEqual(result["confidence"], "low")
+
+    def test_manual_lot_with_board_is_not_multiplied(self):
+        listing = {"title": "Lot of 2 Intel Core i5-8500 + MSI B450 TOMAHAWK MAX", "price": 99, "shipping": 8.5}
+        result = scanner.score_listing(listing, scanner.MANUAL_SEARCH)
+        cpu = next(part for part in result["parts"] if part["part"] == "cpu")
+        self.assertEqual(cpu["value"], 30.0)
+        self.assertFalse(any("Lot of" in flag for flag in result["flags"]))
+
     def test_unknown_shipping(self):
         result = self.score("CPU", "Intel Core i7-8700 3.20GHz 6-Core LGA1151 Desktop Processor", 40, None)
         self.assertEqual(result["shipping"], 0.0)

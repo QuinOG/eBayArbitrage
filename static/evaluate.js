@@ -96,23 +96,46 @@ document.addEventListener("DOMContentLoaded", function () {
     const part = row.querySelector(".part-type").value;
     const text = row.querySelector(".part-name").value.trim();
     const note = row.querySelector(".lookup");
+    // Each call takes a new number, so an older answer that arrives late is ignored.
+    const ticket = (row._ticket || 0) + 1;
+    row._ticket = ticket;
     if (!part) {
       note.textContent = "no price data for this type, type a value";
       return;
     }
-    if (!text) return;
+    if (!text) {
+      row.querySelector(".value").value = "0.00";
+      recalc();
+      return;
+    }
     note.textContent = "looking up...";
-    const response = await fetch("/api/price", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ part, text }),
-    });
-    const p = await response.json();
+    let response, p;
+    try {
+      response = await fetch("/api/price", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ part, text }),
+      });
+      if (row._ticket !== ticket) return;
+      p = await response.json();
+      if (row._ticket !== ticket) return;
+    } catch (err) {
+      if (row._ticket !== ticket) return;
+      console.error(err);
+      note.textContent = "lookup failed, type a value";
+      row.classList.add("low-row");
+      row.querySelector(".dot").className = "dot low";
+      row.querySelector(".value").value = "0.00";
+      recalc();
+      return;
+    }
     const low = !response.ok || p.confidence !== "high";
     row.classList.toggle("low-row", low);
     row.querySelector(".dot").className = "dot " + (low ? "low" : "high");
     if (!response.ok) {
       note.textContent = p.error;
+      row.querySelector(".value").value = "0.00";
+      recalc();
       return;
     }
     note.textContent = `${p.model} · ${partDetail(p)}`;
