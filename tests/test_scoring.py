@@ -131,6 +131,52 @@ class ScoringTest(unittest.TestCase):
         result = self.score("CPU", "Intel Core i7-8700", 40, 5)
         self.assertEqual(result["confidence"], "high")
 
+    def assert_title_excludes(self, result, part, name):
+        self.assertNotIn(part, [entry["part"] for entry in result["parts"]])
+        self.assertTrue(any(f"{name} isn't included" in flag for flag in result["flags"]))
+        self.assertEqual(result["confidence"], "low")
+
+    def test_box_only_no_cpu(self):
+        result = self.score("CPU", "Intel Core i7-8700 box only no CPU", 40, 0)
+        self.assert_title_excludes(result, "cpu", "CPU")
+
+    def test_empty_cpu_box(self):
+        result = self.score("CPU", "Intel Core i7-8700 Empty Box", 40, 0)
+        self.assert_title_excludes(result, "cpu", "CPU")
+
+    def test_cpu_cooler_only(self):
+        result = self.score("CPU", "Intel Core i7-8700 cooler only", 40, 0)
+        self.assert_title_excludes(result, "cpu", "CPU")
+
+    def test_combo_no_ram(self):
+        result = self.score("Combo", "MSI B450 TOMAHAWK MAX + Ryzen 5 3600 Combo, no RAM", 40, 0)
+        self.assertEqual({entry["part"] for entry in result["parts"]}, {"cpu", "mobo"})
+        self.assert_title_excludes(result, "ram", "RAM")
+
+    def test_combo_ram_not_included(self):
+        result = self.score("Combo", "MSI B450 TOMAHAWK MAX + Ryzen 5 3600, RAM not included", 40, 0)
+        self.assertEqual({entry["part"] for entry in result["parts"]}, {"cpu", "mobo"})
+        self.assert_title_excludes(result, "ram", "RAM")
+
+    def test_desktop_without_gpu(self):
+        result = self.score("Desktop", "Gaming PC Ryzen 5 3600 16GB DDR4 without GPU", 40, 0)
+        self.assert_title_excludes(result, "gpu", "GPU")
+
+    def test_cpu_with_no_cpu_cooler(self):
+        result = self.score("CPU", "Intel Core i7-8700 no CPU cooler", 40, 0)
+        self.assertIn("cpu", [entry["part"] for entry in result["parts"]])
+        self.assertFalse(any("isn't included" in flag for flag in result["flags"]))
+
+    def test_cpu_without_cooler_or_box(self):
+        result = self.score("CPU", "Intel Core i7-8700 without cooler, no box", 40, 0)
+        self.assertIn("cpu", [entry["part"] for entry in result["parts"]])
+        self.assertFalse(any("isn't included" in flag for flag in result["flags"]))
+
+    def test_combo_without_exclusions(self):
+        result = self.score("Combo", "MSI B450 TOMAHAWK MAX + Ryzen 5 3600 + 16GB DDR4 3200 Combo", 40, 0)
+        self.assertEqual({entry["part"] for entry in result["parts"]}, {"cpu", "mobo", "ram"})
+        self.assertFalse(any("isn't included" in flag for flag in result["flags"]))
+
     def test_multiple_cpu_models(self):
         model, problem = scanner.find_part("cpu", "i7-8700 and i5-8500")
         self.assertIsNone(model)

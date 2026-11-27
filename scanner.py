@@ -42,6 +42,22 @@ def clean_title(part, title):
 # A description line saying a part isn't included is skipped completely.
 NOT_INCLUDED = re.compile(r"not included|n'?t (?:come|include)|does not (?:come|include)|without|sold separately|"
                           r"\bno (?:cpu|ram|gpu|memory|graphics|processor|cooler|psu)\b", re.IGNORECASE)
+
+# Words in a TITLE that say one part isn't in the box. Checked per part, so "no RAM" still counts the CPU.
+# "no CPU cooler" is about the cooler, so the CPU patterns refuse a following cooler/fan/heatsink.
+NOT_A_COOLER = r"(?!\s*(?:cooler|fan|heatsink|heat sink))"
+TITLE_EXCLUDES = {
+    "cpu": re.compile(r"\bno (?:cpu|processor)\b" + NOT_A_COOLER + r"|\b(?:cpu|processor) not included\b|"
+                      r"\bwithout (?:a |the )?(?:cpu|processor)\b" + NOT_A_COOLER + r"|"
+                      r"\b(?:box|cooler|fan|heatsink) only\b|\bempty box\b", re.IGNORECASE),
+    "mobo": re.compile(r"\bno (?:motherboard|mobo|board)\b|\b(?:motherboard|mobo|board) not included\b|"
+                       r"\bwithout (?:a |the )?(?:motherboard|mobo|board)\b", re.IGNORECASE),
+    "ram": re.compile(r"\bno (?:ram|memory)\b|\b(?:ram|memory) not included\b|\bwithout (?:ram|memory)\b",
+                      re.IGNORECASE),
+    "gpu": re.compile(r"\bno (?:gpu|graphics card|video card|graphics)\b|\b(?:gpu|graphics card) not included\b|"
+                      r"\bwithout (?:a |the )?(?:gpu|graphics card|video card)\b", re.IGNORECASE),
+}
+
 # Talk about what a board supports or was tested with isn't in the box. Only the text before it is kept:
 # "MSI B550 TOMAHAWK, supports Ryzen 5000 like the 5950X" -> "MSI B550 TOMAHAWK, "
 SPEC_TALK = re.compile(r"support|compatib|up to|\bmax(?:imum)?\s+(?:of\b|\d|ram|memory|capacity)|upgrade|recommend|"
@@ -186,6 +202,10 @@ def score_listing(listing, search):
 
     for part in search["parts"]:
         name = PART_NAMES[part]
+        if TITLE_EXCLUDES[part].search(title):
+            flags.append(f"Title says the {name} isn't included. Counted as $0.")
+            missing.append({"part": part, "name": name})
+            continue
         model, problem = find_part(part, title)
         price = lookup(part, model) if model else None
         source = "title"
