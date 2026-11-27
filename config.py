@@ -15,6 +15,10 @@ MIN_PROFIT = 20.00         # a listing needs at least this much profit to count 
 #   parts:    which parts to look for in the listing title
 #   required: parts every listing of this type should have. If one can't be
 #             identified it counts as $0 and the deal gets a warning flag.
+#   details:  also read each listing's item specifics and description, like the
+#             evaluate page does. Costs 1 extra API call per new listing (cached
+#             for 12 hours in data/details_cache.json, so refreshes are nearly free).
+# A search with one part (CPU, GPU) still prices every part of a bundle listed in it.
 #
 # Run `python check_categories.py` to confirm these category IDs with eBay's
 # Taxonomy API. See the TO-DO file.
@@ -22,9 +26,11 @@ SEARCHES = [
     {"name": "CPU", "category_id": "164",
      "parts": ["cpu"], "required": ["cpu"]},
     {"name": "Combo", "category_id": "131511",
-     "parts": ["cpu", "mobo", "ram"], "required": ["cpu", "mobo"]},
+     "parts": ["cpu", "mobo", "ram", "gpu"], "required": ["cpu", "mobo"], "details": True},
     {"name": "Desktop", "category_id": "179",
-     "parts": ["cpu", "mobo", "ram", "gpu"], "required": ["cpu", "mobo", "ram"]},
+     "parts": ["cpu", "mobo", "ram", "gpu"], "required": ["cpu", "mobo", "ram"], "details": True},
+    {"name": "GPU", "category_id": "27386",
+     "parts": ["gpu"], "required": ["gpu"]},
 ]
 
 LISTINGS_PER_SEARCH = 50       # newest N listings per search (Browse API max is 200)

@@ -5,22 +5,27 @@ Price accuracy
 - prices.csv values are eBay sold prices. Local flip prices may be lower or higher. Refresh the data every 1-2 weeks.
 - coolers, PSUs, storage and cases have no price data, so they count as $0 until you type a value on the evaluate page.
   Desktop and combo profit is understated by their value. Collecting sold prices for them would fix it.
-- prebuilt desktops (Dell OptiPlex, HP, Lenovo) never have an identifiable board, so the board counts as $0
-- the desktop search (179) is mostly prebuilt office PCs, all-in-ones and Raspberry Pis. Their titles say "8GB RAM"
-  without DDR type, so RAM isn't found either. Few deals will come from it as long as it's valued by parts.
-- "16GB DDR4" with no kit layout is read as 1x16GB, which prices a bit lower than 2x8GB
+- prebuilt desktops (Dell OptiPlex, HP, Lenovo, mini PCs) never have an identifiable board, so the board counts as $0
+  and the listing says "Prebuilt PC" instead of "not identified"
+- no price data for older Radeon cards (R9, R7, HD series), mobile CPUs (i5-8265U and other U-series) or
+  Core 2 / Pentium chips. They're named in the breakdown but count as $0.
+- RAM with no kit layout ("16GB DDR4") is priced as the average 16GB DDR4 kit. A known layout ("2x8GB") gets its own price.
 
-sold_parser.py extractors (found while testing; scanner works around some of these)
-- extract_mobo needs a brand in the title. scanner.mobo_by_chipset now prices "B660M Motherboard" as an average B660M board.
+sold_parser.py extractors (found while testing; scanner works around these)
+- they have to keep making the same names as prices.csv, so fix them only together with a prices.csv rebuild
+- extract_mobo needs a brand in the title. scanner.mobo_by_chipset prices "B660M Motherboard" as an average B660M board.
 - extract_mobo keeps words like "combo" and "bundle" in the model name. scanner.clean_title strips them.
 - extract_mobo drops words before a dashed chipset: "ASUS TUF GAMING Z490-PLUS" becomes "ASUS Z490-PLUS",
   which misses the exact price and uses the chipset fallback
 - extract_ram reads GPU memory as RAM ("RTX 3070 8GB 32GB DDR4" -> 8GB) and extract_mobo picks up storage words ("1TB").
-  scanner.clean_title strips these before extracting; fixing the extractors would be cleaner.
+  scanner.clean_title strips these before extracting.
+- extract_models reads "Xeon E5-2680 v4" as "Xeon -2680 v4". prices.csv uses the same name, so it still matches.
 
 Ideas
-- the scanner page only reads titles. Reading descriptions there would cost 1 extra API call per listing
-  (about 110 per scan). Could do it just for combo listings with missing parts.
-- after loading a listing by link, pressing Evaluate again only resends the title and description, not the item specifics
-- add a GPU-only search (confirm the category ID with check_categories.py)
-- cache Browse API results for a minute or two so page refreshes don't use extra calls (3 calls per refresh, limit 5,000/day)
+- mixed CPU lots ("LOT OF 6- i5 2nd Gen- x2 2400- x3 2320- x1 2500") aren't priced. Summing each model would work.
+- accessories are caught from the title ("EMPTY BOX", "box only", "fans for", "cooler for Ryzen"). A cooler or
+  fan listed without those words would still be valued as the part.
+- vendor-locked chips (Threadripper PRO and EPYC pulled from Lenovo or Dell workstations) look like deals but only
+  work in that brand's boards. Check the description for "locked" or "PSB".
+- the Desktop search now reads descriptions too. The first scan after starting app.py fetches up to 100 descriptions
+  (about 15 to 20 seconds). They're saved in data/details_cache.json for 12 hours.

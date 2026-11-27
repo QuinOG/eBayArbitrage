@@ -3,12 +3,10 @@ document.addEventListener("DOMContentLoaded", async function () {
   const { esc, money } = window.Parts;
   const loadingScreen = $("loading");
   const hero = $("hero");
-  const bench = $("bench");
   const overview = $("overview");
   const chart = $("chart");
   const tip = $("chart-tip");
   const container = $("deals-container");
-  const dealsHead = $("deals-head");
   const dealsCount = $("deals-count");
   const summary = $("summary");
   const errorsBox = $("errors");
@@ -95,8 +93,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     const parts = d.parts.length
       ? d.parts.map(partLine).join("")
       : `<li class="part"><span class="l-name unknown">No parts identified</span></li>`;
+    // Notes stay folded so the receipts are quick to scan. A low-confidence deal opens them.
     const flags = d.flags.length
-      ? `<ul class="flags">${d.flags.map(f => `<li>${esc(f)}</li>`).join("")}</ul>`
+      ? `<details class="notes"${low && isDeal(d) ? " open" : ""}>
+           <summary>${d.flags.length} ${d.flags.length === 1 ? "note" : "notes"}</summary>
+           <ul class="flags">${d.flags.map(f => `<li>${esc(f)}</li>`).join("")}</ul>
+         </details>`
       : "";
     const meta = [d.search, d.condition, d.post_date].filter(Boolean).map(esc).join(" · ");
     const margin = d.parts_value > 0 ? `${Math.round((d.profit / d.parts_value) * 100)}%` : "none";
@@ -124,50 +126,25 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   // ------------------------------------------------------------------
-  // Hero: the scan in one sentence, and the best flip laid out on the bench
+  // Summary: the scan in one sentence
   // ------------------------------------------------------------------
   function drawHero() {
     const dm = dealMin();
-    const deals = pool.filter(isDeal).sort((a, b) => b.profit - a.profit);
+    const deals = pool.filter(isDeal);
     const n = deals.length;
     const profit = deals.reduce((s, d) => s + d.profit, 0);
     const spend = deals.reduce((s, d) => s + allIn(d), 0);
-    const best = deals[0];
 
     const time = scannedAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }).toLowerCase();
     const checked = [...searchFilters.querySelectorAll("input:checked")].map(cb => cb.value);
     summary.textContent = `Scanned at ${time} · ${checked.join(", ") || "no searches selected"}`;
 
     $("headline").innerHTML =
-      `<span class="n">${n}</span> of <span class="n">${pool.length}</span> listings ${n === 1 ? "clears" : "clear"} <span class="n">$${dm}</span>`;
+      `<span class="n">${n}</span> of <span class="n">${pool.length}</span> listings ${n === 1 ? "clears" : "clear"} <span class="n">$${dm}</span> profit`;
     $("hero-sub").innerHTML = n
-      ? `Buy ${n === 1 ? "it" : `all ${n}`} for <span class="n">${money(spend)}</span> with shipping and tax, sell the parts, and keep <span class="n accent">${money(profit)}</span>`
-      : `Nothing clears your minimum with these filters. Lower the minimum or include more searches.`;
-
-    if (!best) {
-      bench.innerHTML = `<p class="bench-empty">The best flip shows up here once a listing clears $${dm}</p>`;
-      return;
-    }
-    const drawn = best.parts.filter(p => p.model);
-    bench.innerHTML = `
-      <figcaption class="bench-caption">
-        <span>Best flip</span>
-        <a href="#deal-${best._key}" data-key="${best._key}">${esc(best.title)}</a>
-      </figcaption>
-      <div class="bench-items">${drawn.length ? window.Parts.items(drawn) : `<p class="bench-empty">No parts identified in the title</p>`}</div>
-      <p class="bench-sum">
-        <span>${money(best.parts_value)} parts</span>
-        <span class="op">−</span>
-        <span>${money(allIn(best))} in</span>
-        <span class="op">=</span>
-        <strong>${money(best.profit)}</strong>
-      </p>`;
+      ? `Buy ${n === 1 ? "it" : `all ${n}`} for <span class="n">${money(spend)}</span> with shipping and tax, and keep <span class="n accent">${money(profit)}</span>`
+      : `Nothing clears your minimum. Lower it or include more searches.`;
   }
-
-  bench.addEventListener("click", e => {
-    const a = e.target.closest("a[data-key]");
-    if (a) { e.preventDefault(); jumpTo(a.dataset.key); }
-  });
 
   // ------------------------------------------------------------------
   // Chart: what a listing costs (x) against what its parts sell for (y), on graph paper
@@ -311,7 +288,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     container.innerHTML = "";
     shown.forEach((d, i) => {
       const card = createCard(d);
-      if (firstRender && i < 6) { card.classList.add("rise"); card.style.setProperty("--i", i + 3); }
+      if (firstRender && i < 6) { card.classList.add("rise"); card.style.setProperty("--i", i + 1); }
       container.appendChild(card);
     });
     if (!shown.length) {
@@ -320,11 +297,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const sortName = sortSelect.options[sortSelect.selectedIndex].text.toLowerCase();
     dealsCount.textContent = `${shown.length} shown of ${listings.length} scanned · by ${sortName}`;
 
-    if (firstRender) {
-      hero.classList.add("rise");
-      overview.classList.add("rise");
-      overview.style.setProperty("--i", 1);
-    }
+    if (firstRender) hero.classList.add("rise");
     firstRender = false;
   }
 
@@ -347,7 +320,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     loadingScreen.hidden = true;
     hero.hidden = false;
     overview.hidden = false;
-    dealsHead.hidden = false;
+    dealsCount.hidden = false;
     container.hidden = false;
     render();
   } catch (err) {

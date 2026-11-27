@@ -13,3 +13,7 @@ data/*_sales_clean.csv
 data/mobo_chipset_table.csv
 data/ram_capacity_table.csv
 data/raw/
+data/prices_backup_*.csv
+
+# Item descriptions saved by the scanner (ebay_api.py)
+data/details_cache.json

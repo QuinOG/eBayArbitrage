@@ -39,6 +39,8 @@ def api_evaluate():
       {"link": "https://www.ebay.com/itm/..."}                      fetches it from eBay
       {"title": "...", "price": 150, "shipping": 10,
        "description": "..."}                                         any listing, typed by hand
+    The typed version can also carry "specifics" (a list of lines), "listing_url" and
+    "condition", which the page sends back after a listing was loaded by link.
     """
     body = request.get_json(silent=True) or {}
     try:
@@ -53,7 +55,10 @@ def api_evaluate():
                 "title": title,
                 "price": float(body.get("price") or 0),
                 "shipping": float(shipping) if shipping not in (None, "") else 0.0,
-                "condition": "", "listing_url": "", "post_date": "",
+                "condition": str(body.get("condition") or ""),
+                "listing_url": str(body.get("listing_url") or ""),
+                "post_date": "",
+                "specifics": [str(l) for l in (body.get("specifics") or [])][:200],
                 "description": [l.strip() for l in (body.get("description") or "").splitlines() if l.strip()],
             }
     except ValueError as e:
