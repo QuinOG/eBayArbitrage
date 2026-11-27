@@ -182,6 +182,26 @@ class ScoringTest(unittest.TestCase):
         self.assertIsNone(model)
         self.assertIn("several CPU models", problem)
 
+    def test_cpu_models_across_families(self):
+        model, problem = scanner.find_part("cpu", "Intel i7-8700 or Ryzen 5 5600X")
+        self.assertIsNone(model)
+        self.assertIn("several CPU models", problem)
+        self.assertIn("Core i7-8700", problem)
+        self.assertIn("Ryzen 5 5600X", problem)
+
+    def test_cpu_overlapping_xeon_model(self):
+        self.assertEqual(scanner.find_part("cpu", "Intel Xeon E5645 2.4GHz"), ("Xeon E5645", None))
+
+    def test_cpu_reordered_ryzen_model(self):
+        self.assertEqual(scanner.find_part("cpu", "AMD 5800X Ryzen 7 CPU"), ("Ryzen 7 5800X", None))
+
+    def test_ambiguous_cpu_specifics_block_description(self):
+        result = self.score("CPU", "Intel Core CPU", 40, 0,
+                            specifics=["Processor: i7-8700 or i5-8500"],
+                            description=["Ryzen 5 5600X"])
+        self.assertNotIn("cpu", [part["part"] for part in result["parts"]])
+        self.assertTrue(any("several CPU models" in flag for flag in result["flags"]))
+
     def test_price_lookup_fallback_and_unknown(self):
         row = prices.lookup("mobo", "MSI B660M MORTAR")
         self.assertEqual(row, {**FIXTURE[("mobo", "B660M")], "priced_as": "B660M"})

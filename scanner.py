@@ -13,7 +13,7 @@ import re
 
 import config
 from prices import lookup
-from data.sold_parser import CHIPSET, MOBO_JUNK, extract_gpu, extract_mobo, extract_models, extract_ram
+from data.sold_parser import CHIPSET, MOBO_JUNK, MODEL_PATTERNS, extract_gpu, extract_mobo, extract_ram
 
 PART_NAMES = {"cpu": "CPU", "mobo": "Motherboard", "ram": "RAM", "gpu": "GPU"}
 
@@ -101,14 +101,26 @@ def mobo_by_chipset(text):
     return None
 
 
+def cpu_models(text):
+    """Every CPU model in the text, across all families. A match inside an earlier family's match is the same chip."""
+    taken, found = [], []
+    for brand, pat, fmt in MODEL_PATTERNS:
+        for m in pat.finditer(text):
+            if any(m.start() < end and start < m.end() for start, end in taken):
+                continue  # "Xeon E5645" already covers "E5645"
+            taken.append(m.span())
+            found.append(fmt(m))
+    return list(dict.fromkeys(found))
+
+
 def find_part(part, text, allow_chipset=True):
     """Return (model, problem). model is the prices.csv name, or None if it couldn't be identified."""
     text = clean_title(part, text)
     if part == "cpu":
-        models = extract_models(text)
+        models = cpu_models(text)
         if len(models) > 1:
-            return None, f"several CPU models ({', '.join(m for _, m in models)})"
-        return (models[0][1], None) if models else (None, None)
+            return None, f"several CPU models ({', '.join(models)})"
+        return (models[0], None) if models else (None, None)
     extract = {"mobo": extract_mobo, "ram": extract_ram, "gpu": extract_gpu}[part]
     found = extract(text)
     if found:
@@ -128,7 +140,9 @@ def find_in_details(part, listing):
         found = []
         for allow_chipset in (False, True):  # a full board name beats a bare chipset
             for line in lines:
-                model, _ = find_part(part, line, allow_chipset)
+                model, line_problem = find_part(part, line, allow_chipset)
+                if line_problem:
+                    return None, f"the {label} has {line_problem}", label
                 if model and model not in found:
                     found.append(model)
             if found:
