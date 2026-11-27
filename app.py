@@ -1,4 +1,6 @@
 import math
+import threading
+import time
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
@@ -10,6 +12,20 @@ from ebay_api import get_item
 from scanner import MANUAL_SEARCH, PART_NAMES, price_text, scan_all, score_listing
 
 app = Flask(__name__)
+SCAN_CACHE = {"at": 0.0, "result": None}
+SCAN_LOCK = threading.Lock()  # Concurrent requests can share a scan.
+
+
+def cached_scan(refresh=False):
+    with SCAN_LOCK:
+        fresh = time.time() - SCAN_CACHE["at"] < config.SCAN_CACHE_SECONDS
+        if refresh or not fresh or SCAN_CACHE["result"] is None:
+            listings, errors = scan_all()
+            scanned_at = time.time()
+            SCAN_CACHE["at"] = scanned_at
+            SCAN_CACHE["result"] = None if errors and not listings else (listings, errors)
+            return (listings, errors), scanned_at
+        return SCAN_CACHE["result"], SCAN_CACHE["at"]
 
 
 def read_amount(body, key, label):
@@ -34,10 +50,12 @@ def index():
 
 @app.route("/api/deals")
 def api_deals():
-    listings, errors = scan_all()
+    refresh = request.args.get("refresh") == "1"
+    (listings, errors), at = cached_scan(refresh)
     return jsonify({
         "listings": listings,  # every scanned listing, sorted by profit (highest first)
         "errors": errors,
+        "scanned_at": at,
         "min_profit": config.MIN_PROFIT,
         "searches": [s["name"] for s in config.SEARCHES],
     })

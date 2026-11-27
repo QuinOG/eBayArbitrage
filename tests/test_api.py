@@ -11,7 +11,39 @@ class ApiTest(unittest.TestCase):
         patch = mock.patch.dict(prices.PRICES, FIXTURE, clear=True)
         patch.start()
         self.addCleanup(patch.stop)
+        cache_patch = mock.patch.dict(app.SCAN_CACHE, at=0.0, result=None, clear=True)
+        cache_patch.start()
+        self.addCleanup(cache_patch.stop)
         self.client = app.app.test_client()
+
+    @mock.patch("app.scan_all", return_value=([], []))
+    def test_deals_reuses_scan_and_timestamp(self, scan_all):
+        first = self.client.get("/api/deals")
+        second = self.client.get("/api/deals")
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        scan_all.assert_called_once_with()
+        self.assertEqual(first.get_json()["scanned_at"], second.get_json()["scanned_at"])
+
+    @mock.patch("app.scan_all", return_value=([], []))
+    def test_deals_refresh_bypasses_cache(self, scan_all):
+        self.client.get("/api/deals")
+        scan_all.assert_called_once_with()
+
+        response = self.client.get("/api/deals?refresh=1")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(scan_all.call_count, 2)
+
+    @mock.patch("app.scan_all", return_value=([], ["CPU search failed: x"]))
+    def test_deals_does_not_cache_failed_scan(self, scan_all):
+        first = self.client.get("/api/deals")
+        second = self.client.get("/api/deals")
+
+        self.assertEqual(first.get_json()["errors"], ["CPU search failed: x"])
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(scan_all.call_count, 2)
 
     def test_price_cpu(self):
         response = self.client.post("/api/price", json={"part": "cpu", "text": "i7-8700"})

@@ -329,9 +329,10 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   try {
-    const response = await fetch("/api/deals");
+    const refresh = location.search.includes("refresh=1");
+    const response = await fetch(refresh ? "/api/deals?refresh=1" : "/api/deals");
     const data = await response.json();
-    scannedAt = new Date();
+    scannedAt = new Date(data.scanned_at * 1000);
     listings = data.listings.map((d, i) => ({ ...d, _key: i }));
     configMin = data.min_profit;
     // Start the dropdown at the minimum profit from config.py.
@@ -350,6 +351,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     dealsHead.hidden = false;
     container.hidden = false;
     render();
+    if (refresh) history.replaceState(null, "", location.pathname);
   } catch (err) {
     console.error("Error loading deals:", err);
     loadingScreen.innerHTML = '<p class="error">Couldn\'t load deals. Check the terminal running app.py.</p>';
@@ -357,6 +359,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   [hideLow, minProfitSelect, sortSelect].forEach(el => el.addEventListener("change", render));
   searchFilters.addEventListener("change", render);
+  $("refresh").addEventListener("click", () => { location.href = "/?refresh=1"; });
 
   // Redraw the chart at the new width.
   let resizeTimer;

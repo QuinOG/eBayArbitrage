@@ -31,3 +31,4 @@ LISTINGS_PER_SEARCH = 50       # newest N listings per search (Browse API max is
 MAX_LISTING_AGE_HOURS = 4      # ignore listings older than this
 ITEM_LOCATION_COUNTRY = "US"   # only listings shipping from this country
 BUYER_ZIP = "32607"            # your ZIP code, so eBay returns real shipping costs ("" to turn off)
+SCAN_CACHE_SECONDS = 90        # reuse a scan this long; the Refresh button skips it
