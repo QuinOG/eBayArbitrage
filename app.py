@@ -1,4 +1,5 @@
 import math
+import os
 import threading
 import time
 
@@ -129,4 +130,5 @@ def api_price():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # FLASK_DEBUG=1 turns on auto-reload and the in-browser debugger. Keep it off on shared networks.
+    app.run(debug=os.getenv("FLASK_DEBUG") == "1")

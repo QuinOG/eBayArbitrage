@@ -3,7 +3,7 @@
 // recalculated in the browser as you edit values, add parts, or change the price.
 
 document.addEventListener("DOMContentLoaded", function () {
-  const { esc, safeUrl } = window.Parts;
+  const { esc, safeUrl, money } = window.Parts;
   const linkForm = document.getElementById("link_form");
   const manualForm = document.getElementById("manual_form");
   const titleBox = document.getElementById("title");
@@ -17,10 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let taxRate = 0;
   let taxOnShipping = true;
   let lowConfidence = false;
-
-  function money(n) {
-    return (n < 0 ? "-$" : "$") + Math.abs(n).toFixed(2);
-  }
 
   function num(input) {
     const n = parseFloat(input.value);
