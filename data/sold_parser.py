@@ -216,7 +216,9 @@ def money(s):
 
 
 def parse_file(path):
-    lines = [l.strip() for l in open(path, encoding="utf-8", errors="ignore")]
+    # eBay titles can hold invisible marks (‎ and similar). Drop them so titles match and CSVs save.
+    lines = [re.sub(r"[​-‏⁠﻿]", "", l).strip()
+             for l in open(path, encoding="utf-8", errors="ignore")]
     sales = []
     for i, line in enumerate(lines):
         m = re.match(r"^Sold ([A-Z][a-z]{2} \d{1,2}, \d{4})$", line)
@@ -336,7 +338,7 @@ def main(paths, kind="cpu"):
     cutoff = max(s["date"] for s in unique) - timedelta(days=DAYS)
     groups, reasons = {}, {}
     out = kind + "_"
-    with open(out + "sales_clean.csv", "w", newline="") as f:
+    with open(out + "sales_clean.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["sold_date", "brand", "model", "price", "shipping", "total", "format", "status", "title"])
         for s in unique:
@@ -365,7 +367,7 @@ def main(paths, kind="cpu"):
             flag="" if len(use) >= MIN_SALES else "low data",
         ))
     rows.sort(key=lambda r: (-r["sales"], r["model"]))
-    with open(out + "price_table.csv", "w", newline="") as f:
+    with open(out + "price_table.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         w.writeheader()
         w.writerows(rows)
@@ -378,7 +380,7 @@ def main(paths, kind="cpu"):
                 core = next((CHIPSET.match(w) for w in model.split() if CHIPSET.match(w)), None)
             if core:
                 chips.setdefault(core.group(1), []).extend(t for _, t in items)
-        with open("mobo_chipset_table.csv", "w", newline="") as f:
+        with open("mobo_chipset_table.csv", "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f)
             w.writerow(["chipset", "value", "sales", "low", "high"])
             for c, ts in sorted(chips.items(), key=lambda x: -len(x[1])):
@@ -390,7 +392,7 @@ def main(paths, kind="cpu"):
         for (gen, model), items in groups.items():
             parts = model.split()  # DDR4 Desktop 16GB (2x8GB) 3200
             caps.setdefault(" ".join(parts[:3]), []).extend(t for _, t in items)
-        with open("ram_capacity_table.csv", "w", newline="") as f:
+        with open("ram_capacity_table.csv", "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f)
             w.writerow(["type_and_total", "value", "sales", "low", "high"])
             for c, ts in sorted(caps.items(), key=lambda x: -len(x[1])):
@@ -409,16 +411,16 @@ def combine():
     rows = []
     for part in ["cpu", "mobo", "ram", "gpu"]:
         if os.path.exists(f"{part}_price_table.csv"):
-            for r in csv.DictReader(open(f"{part}_price_table.csv")):
+            for r in csv.DictReader(open(f"{part}_price_table.csv", encoding="utf-8")):
                 rows.append(dict(part=part, model=r["model"], value=r["value"], sales=r["sales"],
                                  confidence="low" if r["flag"] else "high", kind="exact"))
     for fname, part, key in [("mobo_chipset_table.csv", "mobo", "chipset"),
                              ("ram_capacity_table.csv", "ram", "type_and_total")]:
         if os.path.exists(fname):
-            for r in csv.DictReader(open(fname)):
+            for r in csv.DictReader(open(fname, encoding="utf-8")):
                 rows.append(dict(part=part, model=r[key], value=r["value"], sales=r["sales"],
                                  confidence="high" if int(r["sales"]) >= MIN_SALES else "low", kind="fallback"))
-    with open("prices.csv", "w", newline="") as f:
+    with open("prices.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=["part", "model", "value", "sales", "confidence", "kind"])
         w.writeheader()
         w.writerows(rows)
